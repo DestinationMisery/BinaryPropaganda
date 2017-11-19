@@ -2,6 +2,7 @@
 var canvas;
 var gl;
 var shaderProgram;
+abs = Math.abs;
 
 // Buffers
 var worldVertexPositionBuffer = null;
@@ -22,12 +23,12 @@ var texturesLoaded = false;
 var currentlyPressedKeys = {};
 
 // Variables for storing current position and speed
-var pitch = 0;
+var pitch = -40;
 var pitchRate = 0;
 var yaw = 0;
 var yawRate = 0;
-var xPosition = 0;
-var yPosition = 0.4;
+var xPosition = -2;
+var yPosition = 2;
 var zPosition = 0;
 var speed = 0;
 
@@ -341,8 +342,6 @@ function animate() {
       xPosition -= Math.sin(degToRad(yaw)) * speed * elapsed;
       zPosition -= Math.cos(degToRad(yaw)) * speed * elapsed;
 
-      joggingAngle += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
-      yPosition = Math.sin(degToRad(joggingAngle)) / 20 + 0.4
     }
 
     yaw += yawRate * elapsed;
@@ -375,10 +374,10 @@ function handleKeyUp(event) {
 // input handling. Function continuisly updates helper variables.
 //
 function handleKeys() {
-  if (currentlyPressedKeys[33]) {
+  if (currentlyPressedKeys[74]) {
     // Page Up
     pitchRate = 0.1;
-  } else if (currentlyPressedKeys[34]) {
+  } else if (currentlyPressedKeys[75]) {
     // Page Down
     pitchRate = -0.1;
   } else {
@@ -405,6 +404,60 @@ function handleKeys() {
     speed = 0;
   }
 }
+
+
+canvasSizeX = 1280;
+canvasSizeY = 720;
+
+playgroundSizeX = 5;
+playgroundSizeY = 5;
+
+function handleClicks(e) {
+  // get pos of click
+  coords = canvas.relMouseCoords(event);
+  canvasX = coords.x;
+  canvasY = coords.y;
+
+  canvasX = (canvasX - (canvasSizeX/2)) / (canvasSizeX/2) * playgroundSizeX;
+  canvasY = (canvasY - (canvasSizeY/2)) / (canvasSizeY/2) * playgroundSizeY;
+  console.table([canvasX, canvasY, xPosition, zPosition])
+  moveTo(canvasX, canvasY, 200)
+}
+
+function moveTo(xDesired, zDesired, speed /* from 1 to 1000 */) {
+
+  // move player every frame in the x,y direction until he is there
+  var intervalMove = setInterval(function () {
+    if (abs(xDesired-xPosition) < 0.1 && abs(zDesired-zPosition) < 0.1) {
+      clearInterval(intervalMove);
+    }
+    xPosition += ((xDesired - xPosition) / (1000 / speed));
+    zPosition += ((zDesired - zPosition) / (1000 / speed));
+  }, 15);
+}
+
+
+function relMouseCoords(event){
+
+  var totalOffsetX = 0;
+  var totalOffsetY = 0;
+  var canvasX = 0;
+  var canvasY = 0;
+  var currentElement = this;
+
+  do{
+      totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+      totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+  }
+  while(currentElement = currentElement.offsetParent)
+
+  canvasX = event.pageX - totalOffsetX;
+  canvasY = event.pageY - totalOffsetY;
+
+  return {x:canvasX, y:canvasY}
+}
+
+HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
 
 //
 // start
@@ -437,6 +490,7 @@ function start() {
     // Bind keyboard handling functions to document handlers
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
+    canvas.onclick = handleClicks;
     
     // Set up to draw the scene periodically.
     setInterval(function() {
