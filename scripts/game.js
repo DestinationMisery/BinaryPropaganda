@@ -359,6 +359,9 @@ function animate() {
 //
 function handleKeyDown(event) {
   // storing the pressed state for individual key
+  if (event.keyCode === 77) {
+    toggleMouseMove();
+  }
   currentlyPressedKeys[event.keyCode] = true;
 }
 
@@ -436,6 +439,15 @@ function moveTo(xDesired, zDesired, speed /* from 1 to 1000 */) {
   }, 15);
 }
 
+var mouseMoveEngaged = false;
+function toggleMouseMove() {
+  mouseMoveEngaged = !mouseMoveEngaged;
+  if (mouseMoveEngaged) {
+    $("#mouseLockState").html("ON")
+  } else {
+    $("#mouseLockState").html("OFF")
+  }
+}
 
 function relMouseCoords(event){
 
@@ -458,6 +470,52 @@ function relMouseCoords(event){
 }
 
 HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
+
+var mouseX = null;
+var mouseY = null;
+
+document.addEventListener('mousemove', onMouseUpdate, false);
+document.addEventListener('mouseenter', onMouseUpdate, false);
+
+function onMouseUpdate(e) {
+    mouseX = e.pageX;
+    mouseY = e.pageY;
+}
+
+function getMouseX() {
+    return x;
+}
+
+function getMouseY() {
+    return y;
+}
+
+
+function mouseMovePlayground(e) {
+  var marginLeft = $("#glcanvas").offset().left;
+  var marginTop = 100;
+ 
+  if (mouseMoveEngaged) {
+    var outLeft = mouseX < marginLeft;
+    var outUp = mouseY < marginTop;
+    var outRight = mouseX > marginLeft + canvasSizeX;
+    var outDown = mouseY > marginTop + canvasSizeY;
+    
+    if (outLeft) {
+      xPosition -= 0.1;
+    }
+    if (outUp) {
+      zPosition -= 0.1;
+    }
+    if (outRight) {
+      xPosition += 0.1;
+    }
+    if (outDown) {
+      zPosition += 0.1;
+    }
+
+  }
+}
 
 //
 // start
@@ -490,13 +548,13 @@ function start() {
     // Bind keyboard handling functions to document handlers
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
-    canvas.onclick = handleClicks;
     
     // Set up to draw the scene periodically.
     setInterval(function() {
       if (texturesLoaded) { // only draw scene and animate when textures are loaded.
         requestAnimationFrame(animate);
         handleKeys();
+        mouseMovePlayground();
         drawScene();
       }
     }, 15);

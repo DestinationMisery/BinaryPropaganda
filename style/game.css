@@ -1,11 +1,11 @@
 #content {
 	margin-top: 100px;
 	width: 100%;
-	text-align: center;
 }
 
 canvas {
-	display: inline;
+	margin: 0 auto;
+	display: table;
 	border: 1px solid black;
 }
 
