@@ -64,9 +64,11 @@ var lastTime = 0;
 function Star(startingDistance, rotationSpeed) {
   this.xPos = 0;
   this.yPos = -2.0;
-
+  this.height = -0.6;
+  
   // Set the colors to a starting value.
   this.randomiseColors();
+  this.animate();
 }
 
 // Function draws individual star
@@ -75,7 +77,7 @@ Star.prototype.draw = function (tilt, spin, twinkle) {
 
   // Move to the star's position
   mat4.rotate(mvMatrix, degToRad(180), [0, 0, 1]);
-  mat4.translate(mvMatrix, [this.xPos, -0.6, this.yPos]);
+  mat4.translate(mvMatrix, [this.xPos, this.height, this.yPos]);
 
   // Draw the star in its main color
   gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
@@ -85,8 +87,12 @@ Star.prototype.draw = function (tilt, spin, twinkle) {
 };
 
 // Function animates individual star
-Star.prototype.animate = function (elapsedTime) {
-
+Star.prototype.animate = function (elapsed) {
+  if (elapsed < 50) {
+    this.height += 0.25/50;
+  } else {
+    this.height -= 0.25/50;
+  }
 };
 
 // Function for random color of star
@@ -499,6 +505,7 @@ function drawScene() {
   }
 }
 
+var framesPassed = 0;
 
 //
 // animate
@@ -509,11 +516,19 @@ function animate() {
   var timeNow = new Date().getTime();
   if (lastTime != 0) {
     var elapsed = timeNow - lastTime;
+    framesPassed++;
+    if (framesPassed > 100) {
+      framesPassed = 0;
+    }
 
     if (speed != 0) {
       xPosition -= Math.sin(degToRad(yaw)) * speed * elapsed;
       zPosition -= Math.cos(degToRad(yaw)) * speed * elapsed;
 
+    }
+
+    for (var i in stars) {
+      stars[i].animate(framesPassed);
     }
 
     yaw += yawRate * elapsed;
@@ -547,7 +562,8 @@ function handleKeyUp(event) {
 //
 // Called every time before redeawing the screen for keyboard
 // input handling. Function continuisly updates helper variables.
-//
+
+
 
 var movementSpeedWASD = 0.03;
 
@@ -728,6 +744,8 @@ function start() {
     // Bind keyboard handling functions to document handlers
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
+
+    
     
     // Set up to draw the scene periodically.
     setInterval(function() {
