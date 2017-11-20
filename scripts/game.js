@@ -62,8 +62,8 @@ var lastTime = 0;
 // Definition of Star object and it's functions
 //
 function Star(startingDistance, rotationSpeed) {
-  this.xPos = 0.0;
-  this.yPos = 1.0;
+  this.xPos = -2.0;
+  this.yPos = -2.0;
 
   // Set the colors to a starting value.
   this.randomiseColors();
@@ -261,10 +261,10 @@ function initBuffers() {
   
   // Now create an array of vertices for the square placeholder.
   vertices = [
-    -1.0, -1.0,  0.0,
-     1.0, -1.0,  0.0,
-    -1.0,  1.0,  0.0,
-     1.0,  1.0,  0.0
+    -0.25, -0.25,  0.0,
+     0.25, -0.25,  0.0,
+    -0.25,  0.25,  0.0,
+     0.25,  0.25,  0.0
   ];
   
   // Now pass the list of vertices into WebGL to build the shape. We
@@ -525,6 +525,9 @@ function handleKeyUp(event) {
 // Called every time before redeawing the screen for keyboard
 // input handling. Function continuisly updates helper variables.
 //
+
+var movementSpeedWASD = 0.03;
+
 function handleKeys() {
   if (currentlyPressedKeys[74]) {
     // Page Up
@@ -538,20 +541,20 @@ function handleKeys() {
 
   if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
     // Left cursor key or A
-    stars[0].xPos -= 0.1;
+    stars[0].xPos -= movementSpeedWASD;
   } else if (currentlyPressedKeys[39] || currentlyPressedKeys[68]) {
     // Right cursor key or D
-    stars[0].xPos += 0.1;
+    stars[0].xPos += movementSpeedWASD;
   } else {
     yawRate = 0;
   }
 
   if (currentlyPressedKeys[38] || currentlyPressedKeys[87]) {
     // Up cursor key or W
-    stars[0].yPos -= 0.1;
+    stars[0].yPos -= movementSpeedWASD;
   } else if (currentlyPressedKeys[40] || currentlyPressedKeys[83]) {
     // Down cursor key
-    stars[0].yPos += 0.1;
+    stars[0].yPos += movementSpeedWASD;
   } else {
     speed = 0;
   }
