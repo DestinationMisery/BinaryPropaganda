@@ -35,11 +35,11 @@ var texturesLoaded = false;
 var currentlyPressedKeys = {};
 
 // Variables for storing current position and speed
-var pitch = -40;
+var pitch = -30;
 var pitchRate = 0;
 var yaw = 0;
 var yawRate = 0;
-var xPosition = -2;
+var xPosition = 0;
 var yPosition = 2;
 var zPosition = 0;
 var speed = 0;
@@ -62,7 +62,7 @@ var lastTime = 0;
 // Definition of Star object and it's functions
 //
 function Star(startingDistance, rotationSpeed) {
-  this.xPos = -2.0;
+  this.xPos = 0;
   this.yPos = -2.0;
 
   // Set the colors to a starting value.
@@ -74,7 +74,8 @@ Star.prototype.draw = function (tilt, spin, twinkle) {
   mvPushMatrix();
 
   // Move to the star's position
-  mat4.translate(mvMatrix, [this.xPos, 1.0, this.yPos]);
+  mat4.rotate(mvMatrix, degToRad(180), [0, 0, 1]);
+  mat4.translate(mvMatrix, [this.xPos, -0.6, this.yPos]);
 
   // Draw the star in its main color
   gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
@@ -95,13 +96,6 @@ Star.prototype.randomiseColors = function () {
   this.r = Math.random();
   this.g = Math.random();
   this.b = Math.random();
-
-  // When the star is twinkling, we draw it twice, once
-  // in the color below (not spinning) and then once in the
-  // main color defined above.
-  this.twinkleR = Math.random();
-  this.twinkleG = Math.random();
-  this.twinkleB = Math.random();
 };
 
 
@@ -260,19 +254,34 @@ function initBuffers() {
   gl.bindBuffer(gl.ARRAY_BUFFER, starVertexPositionBuffer);
   
   // Now create an array of vertices for the square placeholder.
-  vertices = [
-    -0.25, -0.25,  0.0,
-     0.25, -0.25,  0.0,
-    -0.25,  0.25,  0.0,
-     0.25,  0.25,  0.0
-  ];
   
+  vertices = [
+    // Front face
+     0.0,  0.25,  0.0,
+    -0.25, -0.25,  0.25,
+     0.25, -0.25,  0.25,
+
+    // Right face
+     0.0,  0.25,  0.0,
+     0.25, -0.25,  0.25,
+     0.25, -0.25, -0.25,
+
+    // Back face
+     0.0,  0.25,  0.0,
+     0.25, -0.25, -0.25,
+    -0.25, -0.25, -0.25,
+
+    // Left face
+     0.0,  0.25,  0.0,
+    -0.25, -0.25, -0.25,
+    -0.25, -0.25,  0.25
+  ];
   // Now pass the list of vertices into WebGL to build the shape. We
   // do this by creating a Float32Array from the JavaScript array,
   // then use it to fill the current vertex buffer.
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
   starVertexPositionBuffer.itemSize = 3;
-  starVertexPositionBuffer.numItems = 4;
+  starVertexPositionBuffer.numItems = 12;
 
   // Map the texture onto the square placeholder's faces.
   starVertexTextureCoordBuffer = gl.createBuffer();
@@ -280,15 +289,29 @@ function initBuffers() {
   
   // Now create an array of vertex texture coordinates for the quad.
   var textureCoordinates = [
-    0.0,  0.0,
-    1.0,  0.0,
-    0.0,  1.0,
-    1.0,  1.0
-  ];
+    // Front face
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
 
+    // Back face
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+
+    // Left face
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+
+    // Right face
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+    0.0, 1.0, 0.0, 1.0
+  ];
   // Pass the texture coordinates into WebGL
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
-  starVertexTextureCoordBuffer.itemSize = 2;
+  starVertexTextureCoordBuffer.itemSize = 3;
   starVertexTextureCoordBuffer.numItems = 4;
 }
 
@@ -541,10 +564,10 @@ function handleKeys() {
 
   if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
     // Left cursor key or A
-    stars[0].xPos -= movementSpeedWASD;
+    stars[0].xPos += movementSpeedWASD;
   } else if (currentlyPressedKeys[39] || currentlyPressedKeys[68]) {
     // Right cursor key or D
-    stars[0].xPos += movementSpeedWASD;
+    stars[0].xPos -= movementSpeedWASD;
   } else {
     yawRate = 0;
   }
@@ -644,7 +667,7 @@ function getMouseY() {
     return y;
 }
 
-
+var mouseMoveSpeed = 0.03;
 function mouseMovePlayground(e) {
   var marginLeft = $("#glcanvas").offset().left;
   var marginTop = 100;
@@ -656,16 +679,16 @@ function mouseMovePlayground(e) {
     var outDown = mouseY > marginTop + canvasSizeY;
     
     if (outLeft) {
-      xPosition -= 0.1;
+      xPosition -= mouseMoveSpeed;
     }
     if (outUp) {
-      zPosition -= 0.1;
+      zPosition -= mouseMoveSpeed;
     }
     if (outRight) {
-      xPosition += 0.1;
+      xPosition += mouseMoveSpeed;
     }
     if (outDown) {
-      zPosition += 0.1;
+      zPosition += mouseMoveSpeed;
     }
 
   }
