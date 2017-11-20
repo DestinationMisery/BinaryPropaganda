@@ -7,6 +7,8 @@ abs = Math.abs;
 // Buffers
 var worldVertexPositionBuffer = null;
 var worldVertexTextureCoordBuffer = null;
+var starVertexPositionBuffer;
+var starVertexTextureCoordBuffer;
 
 // Model-view and projection matrix and model-view matrix stack
 var mvMatrixStack = [];
@@ -15,6 +17,16 @@ var pMatrix = mat4.create();
 
 // Variables for storing textures
 var wallTexture;
+var stars = [];
+var starTexture;
+
+// Variables for storing current rotation of cube
+var tilt = 90;
+var spin = 0;
+
+// Helper variables for animation
+var lastTime = 0;
+var effectiveFPMS = 60 / 1000;
 
 // Variable that stores  loading state of textures.
 var texturesLoaded = false;
@@ -45,6 +57,54 @@ var lastTime = 0;
 // mvPop    ... pop top matrix from stack
 // degToRad ... convert degrees to radians
 //
+
+//
+// Definition of Star object and it's functions
+//
+function Star(startingDistance, rotationSpeed) {
+  this.xPos = 0.0;
+  this.yPos = 1.0;
+
+  // Set the colors to a starting value.
+  this.randomiseColors();
+}
+
+// Function draws individual star
+Star.prototype.draw = function (tilt, spin, twinkle) {
+  mvPushMatrix();
+
+  // Move to the star's position
+  mat4.translate(mvMatrix, [this.xPos, 1.0, this.yPos]);
+
+  // Draw the star in its main color
+  gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
+  drawStar();
+
+  mvPopMatrix();
+};
+
+// Function animates individual star
+Star.prototype.animate = function (elapsedTime) {
+
+};
+
+// Function for random color of star
+Star.prototype.randomiseColors = function () {
+  // Give the star a random color for normal
+  // circumstances...
+  this.r = Math.random();
+  this.g = Math.random();
+  this.b = Math.random();
+
+  // When the star is twinkling, we draw it twice, once
+  // in the color below (not spinning) and then once in the
+  // main color defined above.
+  this.twinkleR = Math.random();
+  this.twinkleG = Math.random();
+  this.twinkleB = Math.random();
+};
+
+
 function mvPushMatrix() {
   var copy = mat4.create();
   mat4.set(mvMatrix, copy);
@@ -176,6 +236,9 @@ function initShaders() {
   shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
   // store location of uSampler variable defined in shader
   shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+
+  // store location of uColor variable defined in shader
+  shaderProgram.colorUniform = gl.getUniformLocation(shaderProgram, "uColor");
 }
 
 //
@@ -186,6 +249,77 @@ function initShaders() {
 function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
   gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+}
+
+function initBuffers() {
+  // Create a buffer for the square placeholder's vertices.
+  starVertexPositionBuffer = gl.createBuffer();
+  
+  // Select the starVertexPositionBuffer as the one to apply vertex
+  // operations to from here out.
+  gl.bindBuffer(gl.ARRAY_BUFFER, starVertexPositionBuffer);
+  
+  // Now create an array of vertices for the square placeholder.
+  vertices = [
+    -1.0, -1.0,  0.0,
+     1.0, -1.0,  0.0,
+    -1.0,  1.0,  0.0,
+     1.0,  1.0,  0.0
+  ];
+  
+  // Now pass the list of vertices into WebGL to build the shape. We
+  // do this by creating a Float32Array from the JavaScript array,
+  // then use it to fill the current vertex buffer.
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+  starVertexPositionBuffer.itemSize = 3;
+  starVertexPositionBuffer.numItems = 4;
+
+  // Map the texture onto the square placeholder's faces.
+  starVertexTextureCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, starVertexTextureCoordBuffer);
+  
+  // Now create an array of vertex texture coordinates for the quad.
+  var textureCoordinates = [
+    0.0,  0.0,
+    1.0,  0.0,
+    0.0,  1.0,
+    1.0,  1.0
+  ];
+
+  // Pass the texture coordinates into WebGL
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
+  starVertexTextureCoordBuffer.itemSize = 2;
+  starVertexTextureCoordBuffer.numItems = 4;
+}
+
+function drawStar() {
+  // Activate texture
+  gl.activeTexture(gl.TEXTURE0);
+  // Bind texture
+  gl.bindTexture(gl.TEXTURE_2D, starTexture);
+  gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+  // Set the texture coordinates attribute for the vertices.
+  gl.bindBuffer(gl.ARRAY_BUFFER, starVertexTextureCoordBuffer);
+  gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, starVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  // Draw stars by binding the array buffer to the star's vertices
+  // array, setting attributes, and pushing it to GL.
+  gl.bindBuffer(gl.ARRAY_BUFFER, starVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, starVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  // Draw the star.
+  setMatrixUniforms();
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, starVertexPositionBuffer.numItems);
+}
+
+function initWorldObjects() {
+  var numStars = 1;
+
+  for (var i = 0; i < numStars; i++) {
+    // Create new star and push it to the stars array
+    stars.push(new Star((i / numStars) * 5.0, i / numStars));
+  }
 }
 
 //
@@ -202,6 +336,13 @@ function initTextures() {
     handleTextureLoaded(wallTexture)
   }
   wallTexture.image.src = "./assets/ground.png";
+
+  starTexture = gl.createTexture();
+  starTexture.image = new Image();
+  starTexture.image.onload = function () {
+    handleTextureLoaded(starTexture)
+  }
+  starTexture.image.src = "./assets/star.gif";
 }
 
 function handleTextureLoaded(texture) {
@@ -326,7 +467,15 @@ function drawScene() {
   // Draw the cube.
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
+
+  //
+  var twinkle = false;
+  for (var i in stars) {
+    stars[i].draw(tilt, spin, twinkle);
+    spin += 0.1;
+  }
 }
+
 
 //
 // animate
@@ -389,20 +538,20 @@ function handleKeys() {
 
   if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
     // Left cursor key or A
-    yawRate = 0.1;
+    stars[0].xPos -= 0.1;
   } else if (currentlyPressedKeys[39] || currentlyPressedKeys[68]) {
     // Right cursor key or D
-    yawRate = -0.1;
+    stars[0].xPos += 0.1;
   } else {
     yawRate = 0;
   }
 
   if (currentlyPressedKeys[38] || currentlyPressedKeys[87]) {
     // Up cursor key or W
-    speed = 0.003;
+    stars[0].yPos -= 0.1;
   } else if (currentlyPressedKeys[40] || currentlyPressedKeys[83]) {
     // Down cursor key
-    speed = -0.003;
+    stars[0].yPos += 0.1;
   } else {
     speed = 0;
   }
@@ -544,8 +693,11 @@ function start() {
     // Next, load and set up the textures we'll be using.
     initTextures();
 
+    initBuffers();
+
     // Initialise world objects
     loadWorld();
+    initWorldObjects();
 
     // Bind keyboard handling functions to document handlers
     document.onkeydown = handleKeyDown;
