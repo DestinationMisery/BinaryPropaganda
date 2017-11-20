@@ -1,4 +1,4 @@
-// Global variable definitionvar canvas;
+// Global variable definition
 var canvas;
 var gl;
 var shaderProgram;
@@ -444,8 +444,10 @@ function toggleMouseMove() {
   mouseMoveEngaged = !mouseMoveEngaged;
   if (mouseMoveEngaged) {
     $("#mouseLockState").html("ON")
+    $("#mouseLockState").css("color", "#00ff00")
   } else {
     $("#mouseLockState").html("OFF")
+    $("#mouseLockState").css("color", "#ff0000")
   }
 }
 
