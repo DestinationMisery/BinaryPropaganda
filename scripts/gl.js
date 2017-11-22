@@ -199,8 +199,6 @@ function drawScene() {
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
 
-  // Initializes drawing players objects
-  for (var i in friendlyPlayers) {
-    friendlyPlayers[i].draw();
-  }
+  pyr = new PlayerObject('PYR', 0, -2.0, 1, 1, 1);
+  pyr.draw();
 }
