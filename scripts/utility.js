@@ -54,3 +54,8 @@ function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
   gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 }
+
+function setMatrixUniformsCube() {
+  gl.uniformMatrix4fv(shaderCubeProgram.pMatrixUniform, false, pMatrix);
+  gl.uniformMatrix4fv(shaderCubeProgram.mvMatrixUniform, false, mvMatrix);
+}

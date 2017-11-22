@@ -155,6 +155,7 @@ function getShader(gl, id) {
 // Set the uniforms in shaders.
 //
 function setMatrixUniforms() {
+
   gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
   gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 }
@@ -175,6 +176,7 @@ function drawScene() {
     return;
   }
   
+  gl.useProgram(shaderProgram);
   // Establish the perspective with which we want to view the
   // scene. Our field of view is 45 degrees, with a width/height
   // ratio of 640:480, and we only want to see objects between 0.1 units

@@ -30,10 +30,12 @@ PlayerObject.prototype.draw = function () {
 
   switch (this.type) {
     case 'PYR':
+      gl.useProgram(shaderProgram);
       this.setPyrVerticesAndTextureCoordinates();
       break;
 
     case 'CUBE':
+      gl.useProgram(shaderCubeProgram);
       this.setCubeVerticesAndTextureCoordinates();
       break;
   
@@ -50,7 +52,7 @@ PlayerObject.prototype.draw = function () {
 
   mat4.translate(mvMatrix, [this.xPos, this.height, this.yPos]);
 
-  gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
+  // gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
   
   switch (this.type) {
     case 'PYR':
@@ -261,6 +263,7 @@ PlayerObject.prototype.initCubeBuffer = function() {
 }
 
 PlayerObject.prototype.drawPyrPlayerObject = function(playerTexture) {
+  gl.useProgram(shaderProgram);
   // Activate texture
   gl.activeTexture(gl.TEXTURE0);
   // Bind texture
@@ -283,6 +286,7 @@ PlayerObject.prototype.drawPyrPlayerObject = function(playerTexture) {
 
 PlayerObject.prototype.drawCubePlayerObject = function(playerTexture) {
 
+  gl.useProgram(shaderCubeProgram);
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
   gl.vertexAttribPointer(shaderCubeProgram.vertexPositionAttribute, this.cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -290,7 +294,7 @@ PlayerObject.prototype.drawCubePlayerObject = function(playerTexture) {
   gl.vertexAttribPointer(shaderCubeProgram.vertexColorAttribute, this.cubeVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
-  setMatrixUniforms();
+  setMatrixUniformsCube();
   gl.drawElements(gl.TRIANGLES, this.cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 
 }
