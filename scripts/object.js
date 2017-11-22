@@ -1,6 +1,6 @@
-function PlayerObject(type, xPos, yPos, r, g, b) {
-  // this.type = type;
+function PlayerObject(type, size, xPos, yPos, r, g, b) {
   this.type = type;
+  this.scale = size;
   this.height = -0.6;
   this.xPos = xPos;
   this.yPos = yPos;
@@ -45,24 +45,24 @@ PlayerObject.prototype.setPyrVerticesAndTextureCoordinates = function() {
   // pyramid vertices
   this.vertices = [
     // Front face
-     0.0,  0.25,  0.0,
-    -0.25, -0.25,  0.25,
-     0.25, -0.25,  0.25,
+     0.0,  this.scale,  0.0,
+    -this.scale, -this.scale,  this.scale,
+     this.scale, -this.scale,  this.scale,
 
     // Right face
-     0.0,  0.25,  0.0,
-     0.25, -0.25,  0.25,
-     0.25, -0.25, -0.25,
+     0.0,  this.scale,  0.0,
+     this.scale, -this.scale,  this.scale,
+     this.scale, -this.scale, -this.scale,
 
     // Back face
-     0.0,  0.25,  0.0,
-     0.25, -0.25, -0.25,
-    -0.25, -0.25, -0.25,
+     0.0,  this.scale,  0.0,
+     this.scale, -this.scale, -this.scale,
+    -this.scale, -this.scale, -this.scale,
 
     // Left face
-     0.0,  0.25,  0.0,
-    -0.25, -0.25, -0.25,
-    -0.25, -0.25,  0.25
+     0.0,  this.scale,  0.0,
+    -this.scale, -this.scale, -this.scale,
+    -this.scale, -this.scale,  this.scale
   ];
   this.texture = pyrTexture; // pulled from the global scope of the initally setup textures
   this.textureCoordinates = [
