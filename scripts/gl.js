@@ -183,4 +183,5 @@ function drawScene() {
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
   pyr.draw();
+  pyr2.draw();
 }
