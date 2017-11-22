@@ -23,7 +23,6 @@ PlayerObject.prototype.draw = function () {
   
   this.wait = setInterval(() => {
     if (pyrTexturesLoaded) {
-      console.log("drawing");
       mvPushMatrix();
 
       if (this.type === 'PYR') {

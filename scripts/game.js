@@ -140,6 +140,7 @@ function start() {
     // Bind keyboard handling functions to document handlers
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
+    pyr = new PlayerObject('PYR', 0, -2.0, 1, 1, 1);
 
     // Set up to draw the scene periodically.
     setInterval(function() {

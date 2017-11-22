@@ -198,7 +198,5 @@ function drawScene() {
   // Draw the cube.
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
-
-  pyr = new PlayerObject('PYR', 0, -2.0, 1, 1, 1);
   pyr.draw();
 }
