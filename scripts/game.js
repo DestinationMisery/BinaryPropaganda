@@ -71,43 +71,12 @@ function animate() {
   lastTime = timeNow;
 }
 
-let pyrTexture;
-let pyrTexturesLoaded = false;
-
-function initPyramidTextures() {
-  pyrTexture = gl.createTexture();
-  pyrTexture.image = new Image();
-  pyrTexture.image.onload = function () {
-    pyrHandleTextureLoaded(pyrTexture);
-  }
-  pyrTexture.image.src = "./assets/star.gif";
-}
-
-function pyrHandleTextureLoaded (texture) {
-  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-
-  // Third texture usus Linear interpolation approximation with nearest Mipmap selection
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.generateMipmap(gl.TEXTURE_2D);
-
-  gl.bindTexture(gl.TEXTURE_2D, null);
-
-  // when texture loading is finished we can draw scenes
-  pyrTexturesLoaded = true;
-}
-
-
 canvasSizeX = 1280;
 canvasSizeY = 720;
 
 playgroundSizeX = 5;
 playgroundSizeY = 5;
 
-let cubeTexturesLoaded = true;
-let hotspotTexturesLoaded = true;
 
 function checkIfAllTexturesLoaded() {
   // check world
@@ -145,12 +114,11 @@ function start() {
     // Next, load and set up the textures we'll be using.
     initWorldTextures();
     initPyramidTextures();
-
-    // initPlayerBuffers();
+    initCubeTextures();
+    initHotspotTextures();
 
     // Initialise world objects
     loadWorld();
-    // initPlayerObjects();
 
     // Bind keyboard handling functions to document handlers
     document.onkeydown = handleKeyDown;

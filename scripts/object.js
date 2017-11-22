@@ -1,6 +1,6 @@
 function PlayerObject(type, xPos, yPos, r, g, b) {
   // this.type = type;
-  this.type = 'PYR';
+  this.type = type;
   this.height = -0.6;
   this.xPos = xPos;
   this.yPos = yPos;
@@ -15,6 +15,7 @@ PlayerObject.prototype.draw = function () {
   switch (this.type) {
     case 'PYR':
       this.texture = pyrTexture;
+      this.setPyrVerticesAndTextureCoordinates();
       break;
   
     default:
@@ -40,16 +41,7 @@ PlayerObject.prototype.draw = function () {
   mvPopMatrix();
 }
 
-PlayerObject.prototype.initBuffer = function() {
-  // Create a buffer for the square placeholder's vertices.
-  this.friendlyPlayerVertexPositionBuffer = gl.createBuffer();
-  
-  // Select the friendlyPlayerVertexPositionBuffer as the one to apply vertex
-  // operations to from here out.
-  gl.bindBuffer(gl.ARRAY_BUFFER, this.friendlyPlayerVertexPositionBuffer);
-  
-  // Now create an array of vertices for the pyr placeholder.
-  
+PlayerObject.prototype.setPyrVerticesAndTextureCoordinates = function() {
   // pyramid vertices
   this.vertices = [
     // Front face
@@ -72,20 +64,7 @@ PlayerObject.prototype.initBuffer = function() {
     -0.25, -0.25, -0.25,
     -0.25, -0.25,  0.25
   ];
-
-  // Now pass the list of vertices into WebGL to build the shape. We
-  // do this by creating a Float32Array from the JavaScript array,
-  // then use it to fill the current vertex buffer.
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-  this.friendlyPlayerVertexPositionBuffer.itemSize = 3;
-  this.friendlyPlayerVertexPositionBuffer.numItems = 12;
-
-  // Map the texture onto the square placeholder's faces.
-  this.friendlyPlayerVertexTextureCoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, this.friendlyPlayerVertexTextureCoordBuffer);
-  
-  // Now create an array of vertex texture coordinates for the pyramid.
-  // TODO: Implement
+  this.texture = pyrTexture; // pulled from the global scope of the initally setup textures
   this.textureCoordinates = [
     // Front face
     1.0, 0.0, 0.0, 1.0,
@@ -107,6 +86,27 @@ PlayerObject.prototype.initBuffer = function() {
     0.0, 0.0, 1.0, 1.0,
     0.0, 1.0, 0.0, 1.0
   ];
+}
+
+PlayerObject.prototype.initBuffer = function() {
+  // Create a buffer for the square placeholder's vertices.
+  this.friendlyPlayerVertexPositionBuffer = gl.createBuffer();
+  
+  // Select the friendlyPlayerVertexPositionBuffer as the one to apply vertex
+  // operations to from here out.
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.friendlyPlayerVertexPositionBuffer);
+
+  // Now pass the list of vertices into WebGL to build the shape. We
+  // do this by creating a Float32Array from the JavaScript array,
+  // then use it to fill the current vertex buffer.
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+  this.friendlyPlayerVertexPositionBuffer.itemSize = 3;
+  this.friendlyPlayerVertexPositionBuffer.numItems = 12;
+
+  // Map the texture onto the square placeholder's faces.
+  this.friendlyPlayerVertexTextureCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.friendlyPlayerVertexTextureCoordBuffer);
+  
   // Pass the texture coordinates into WebGL
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.textureCoordinates), gl.STATIC_DRAW);
   this.friendlyPlayerVertexTextureCoordBuffer.itemSize = 3;
@@ -117,7 +117,7 @@ PlayerObject.prototype.drawPlayerObject = function(playerTexture) {
   // Activate texture
   gl.activeTexture(gl.TEXTURE0);
   // Bind texture
-  gl.bindTexture(gl.TEXTURE_2D, pyrTexture);
+  gl.bindTexture(gl.TEXTURE_2D, this.texture);
   gl.uniform1i(shaderProgram.samplerUniform, 0);
 
   // Set the texture coordinates attribute for the vertices.
@@ -133,3 +133,4 @@ PlayerObject.prototype.drawPlayerObject = function(playerTexture) {
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.friendlyPlayerVertexPositionBuffer.numItems);
 }
+
