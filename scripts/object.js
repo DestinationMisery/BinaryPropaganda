@@ -20,29 +20,24 @@ PlayerObject.prototype.draw = function () {
     default:
       break;
   }
+
+  mvPushMatrix();
+
+  if (this.type === 'PYR') {
+    // Rotating around z axis for 180 degrees (flipping upside down)
+    mat4.rotate(mvMatrix, degToRad(180), [0, 0, 1]);
+  }
+
+  mat4.translate(mvMatrix, [this.xPos, this.height, this.yPos]);
+
+  gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
   
-  this.wait = setInterval(() => {
-    if (pyrTexturesLoaded) {
-      mvPushMatrix();
+  this.initBuffer();
 
-      if (this.type === 'PYR') {
-        // Rotating around z axis for 180 degrees (flipping upside down)
-        mat4.rotate(mvMatrix, degToRad(180), [0, 0, 1]);
-      }
+  // risi
+  this.drawPlayerObject();
 
-      mat4.translate(mvMatrix, [this.xPos, this.height, this.yPos]);
-    
-      gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
-      
-      this.initBuffer();
-    
-      // risi
-      this.drawPlayerObject();
-    
-      mvPopMatrix();
-      clearInterval(this.wait);
-    }
-  }, 100);
+  mvPopMatrix();
 }
 
 PlayerObject.prototype.initBuffer = function() {

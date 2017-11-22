@@ -25,7 +25,7 @@ var lastTime = 0;
 var effectiveFPMS = 60 / 1000;
 
 // Variable that stores  loading state of textures.
-var texturesLoaded = false;
+var worldTexturesLoaded = false;
 
 // Helper variable for animation
 var lastTime = 0;
@@ -106,6 +106,21 @@ canvasSizeY = 720;
 playgroundSizeX = 5;
 playgroundSizeY = 5;
 
+let cubeTexturesLoaded = true;
+let hotspotTexturesLoaded = true;
+
+function checkIfAllTexturesLoaded() {
+  // check world
+  // check pyr
+  // check cube
+  // check hotspots
+
+  if (worldTexturesLoaded && pyrTexturesLoaded && cubeTexturesLoaded && hotspotTexturesLoaded) {
+    return true;
+  }
+  return false;
+}
+
 //
 // start
 //
@@ -144,7 +159,7 @@ function start() {
 
     // Set up to draw the scene periodically.
     setInterval(function() {
-      if (texturesLoaded) { // only draw scene and animate when textures are loaded.
+      if (checkIfAllTexturesLoaded()) { // only draw scene and animate when textures are loaded.
         requestAnimationFrame(animate);
         handleKeys();
         mouseMovePlayground();
