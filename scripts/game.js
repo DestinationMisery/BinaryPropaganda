@@ -139,6 +139,8 @@ function start() {
     cubes.push(new PlayerObject('CUBE', 0.21, -1, -12, 0.6, 1, 1, 1, []));
     cubes.push(new PlayerObject('CUBE', 0.3, 0, -13.6, 0.6, 1, 1, 1, [cubes[0], cubes[1], cubes[2]])); // the main one is last
 
+    cubes[cubes.length - 1].executePath(randomPyramidPath, 14);
+
     // Set up to draw the scene periodically.
     setInterval(function() {
       if (checkIfAllTexturesLoaded()) { // only draw scene and animate when textures are loaded.
