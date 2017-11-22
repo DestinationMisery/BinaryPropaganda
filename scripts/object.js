@@ -1,21 +1,40 @@
-function PlayerObject(type, size, xPos, yPos, r, g, b) {
+function PlayerObject(type, size, xPos, yPos, height, r, g, b, companions) {
   this.type = type;
   this.scale = size;
-  this.height = -0.6;
+  this.height = height;
+  if (this.type === 'PYR') {
+    this.height = -this.height;
+  }
   this.xPos = xPos;
   this.yPos = yPos;
   this.r = 1;
   this.g = 1;
   this.b = 1;
   this.texturesLoaded = false;
+  this.companions = companions;
+}
+
+PlayerObject.prototype.move = function (dx, dy, delay) {
+  this.xPos += dx;
+  this.yPos += dy;
+
+  setTimeout(() => {
+    // minions are a bit behind you
+    this.companions.forEach((companion) => {
+      companion.move(dx, dy, Math.random() * 1000);
+    });
+  }, 500);
 }
 
 PlayerObject.prototype.draw = function () {
 
   switch (this.type) {
     case 'PYR':
-      this.texture = pyrTexture;
       this.setPyrVerticesAndTextureCoordinates();
+      break;
+
+    case 'CUBE':
+      this.setCubeVerticesAndTextureCoordinates();
       break;
   
     default:
@@ -33,13 +52,33 @@ PlayerObject.prototype.draw = function () {
 
   gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
   
-  this.initBuffer();
+  switch (this.type) {
+    case 'PYR':
+      this.initPyramidBuffer();
+      this.drawPyrPlayerObject();
+      break;
 
-  // risi
-  this.drawPlayerObject();
+    case 'CUBE':
+      this.initCubeBuffer();
+      this.drawCubePlayerObject();
+      break;
+
+    default:
+      break;
+  }
 
   mvPopMatrix();
+
+  this.hover(framesPassed);
 }
+
+PlayerObject.prototype.hover = function (elapsed) {
+  if (elapsed < 50) {
+    this.height += 0.25/50;
+  } else {
+    this.height -= 0.25/50;
+  }
+};
 
 PlayerObject.prototype.setPyrVerticesAndTextureCoordinates = function() {
   // pyramid vertices
@@ -88,7 +127,70 @@ PlayerObject.prototype.setPyrVerticesAndTextureCoordinates = function() {
   ];
 }
 
-PlayerObject.prototype.initBuffer = function() {
+PlayerObject.prototype.setCubeVerticesAndTextureCoordinates = function() {
+  // pyramid vertices
+  this.vertices = [
+    // Front face
+    -this.scale, -this.scale,  this.scale,
+     this.scale, -this.scale,  this.scale,
+     this.scale,  this.scale,  this.scale,
+    -this.scale,  this.scale,  this.scale,
+
+    // Back face
+    -this.scale, -this.scale, -this.scale,
+    -this.scale,  this.scale, -this.scale,
+     this.scale,  this.scale, -this.scale,
+     this.scale, -this.scale, -this.scale,
+
+    // Top face
+    -this.scale,  this.scale, -this.scale,
+    -this.scale,  this.scale,  this.scale,
+     this.scale,  this.scale,  this.scale,
+     this.scale,  this.scale, -this.scale,
+
+    // Bottom face
+    -this.scale, -this.scale, -this.scale,
+     this.scale, -this.scale, -this.scale,
+     this.scale, -this.scale,  this.scale,
+    -this.scale, -this.scale,  this.scale,
+
+    // Right face
+     this.scale, -this.scale, -this.scale,
+     this.scale,  this.scale, -this.scale,
+     this.scale,  this.scale,  this.scale,
+     this.scale, -this.scale,  this.scale,
+
+    // Left face
+    -this.scale, -this.scale, -this.scale,
+    -this.scale, -this.scale,  this.scale,
+    -this.scale,  this.scale,  this.scale,
+    -this.scale,  this.scale, -this.scale,
+  ];
+  this.texture = pyrTexture; // pulled from the global scope of the initally setup textures
+  this.colors = [
+    // Front face
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+
+    // Back face
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+
+    // Left face
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+
+    // Right face
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+    0.0, 1.0, 0.0, 1.0
+  ];
+}
+
+PlayerObject.prototype.initPyramidBuffer = function() {
   // Create a buffer for the square placeholder's vertices.
   this.friendlyPlayerVertexPositionBuffer = gl.createBuffer();
   
@@ -113,7 +215,52 @@ PlayerObject.prototype.initBuffer = function() {
   this.friendlyPlayerVertexTextureCoordBuffer.numItems = 4;
 }
 
-PlayerObject.prototype.drawPlayerObject = function(playerTexture) {
+PlayerObject.prototype.initCubeBuffer = function() {
+  
+  this.cubeVertexPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
+ 
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+  this.cubeVertexPositionBuffer.itemSize = 3;
+  this.cubeVertexPositionBuffer.numItems = 24;
+
+  this.cubeVertexColorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexColorBuffer);
+  colors = [
+      [1.0, 0.0, 0.0, 1.0], // Front face
+      [1.0, 1.0, 0.0, 1.0], // Back face
+      [0.0, 1.0, 0.0, 1.0], // Top face
+      [1.0, 0.5, 0.5, 1.0], // Bottom face
+      [1.0, 0.0, 1.0, 1.0], // Right face
+      [0.0, 0.0, 1.0, 1.0]  // Left face
+  ];
+  var unpackedColors = [];
+  for (var i in colors) {
+      var color = colors[i];
+      for (var j=0; j < 4; j++) {
+          unpackedColors = unpackedColors.concat(color);
+      }
+  }
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(unpackedColors), gl.STATIC_DRAW);
+  this.cubeVertexColorBuffer.itemSize = 4;
+  this.cubeVertexColorBuffer.numItems = 24;
+
+  this.cubeVertexIndexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
+  this.cubeVertexIndices = [
+      0, 1, 2,      0, 2, 3,    // Front face
+      4, 5, 6,      4, 6, 7,    // Back face
+      8, 9, 10,     8, 10, 11,  // Top face
+      12, 13, 14,   12, 14, 15, // Bottom face
+      16, 17, 18,   16, 18, 19, // Right face
+      20, 21, 22,   20, 22, 23  // Left face
+  ];
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.cubeVertexIndices), gl.STATIC_DRAW);
+  this.cubeVertexIndexBuffer.itemSize = 1;
+  this.cubeVertexIndexBuffer.numItems = 36;
+}
+
+PlayerObject.prototype.drawPyrPlayerObject = function(playerTexture) {
   // Activate texture
   gl.activeTexture(gl.TEXTURE0);
   // Bind texture
@@ -132,5 +279,19 @@ PlayerObject.prototype.drawPlayerObject = function(playerTexture) {
   // Draw the star.
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.friendlyPlayerVertexPositionBuffer.numItems);
+}
+
+PlayerObject.prototype.drawCubePlayerObject = function(playerTexture) {
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderCubeProgram.vertexPositionAttribute, this.cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexColorBuffer);
+  gl.vertexAttribPointer(shaderCubeProgram.vertexColorAttribute, this.cubeVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
+  setMatrixUniforms();
+  gl.drawElements(gl.TRIANGLES, this.cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+
 }
 

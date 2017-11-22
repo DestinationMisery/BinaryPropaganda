@@ -34,6 +34,9 @@ function initGL(canvas) {
 function initShaders() {
   var fragmentShader = getShader(gl, "shader-fs");
   var vertexShader = getShader(gl, "shader-vs");
+
+  var fragmentCubeShader = getShader(gl, "shader-cube-fs");
+  var vertexCubeShader = getShader(gl, "shader-cube-vs");
   
   // Create the shader program
   shaderProgram = gl.createProgram();
@@ -70,6 +73,29 @@ function initShaders() {
 
   // store location of uColor variable defined in shader
   shaderProgram.colorUniform = gl.getUniformLocation(shaderProgram, "uColor");
+
+
+
+  /* =======SECOND SHADER FOR CUBES======== */
+
+
+  shaderCubeProgram = gl.createProgram();
+  gl.attachShader(shaderCubeProgram, vertexCubeShader);
+  gl.attachShader(shaderCubeProgram, fragmentCubeShader);
+  gl.linkProgram(shaderCubeProgram);
+
+  shaderCubeProgram.vertexPositionAttribute = gl.getAttribLocation(shaderCubeProgram, "aVertexPosition");
+  gl.enableVertexAttribArray(shaderCubeProgram.vertexPositionAttribute);
+  
+  shaderCubeProgram.vertexColorAttribute = gl.getAttribLocation(shaderCubeProgram, "aVertexColor");
+  gl.enableVertexAttribArray(shaderCubeProgram.vertexColorAttribute);
+
+  // store location of uPMatrix variable defined in shader - projection matrix 
+  shaderCubeProgram.pMatrixUniform = gl.getUniformLocation(shaderCubeProgram, "uPMatrix");
+  // store location of uMVMatrix variable defined in shader - model-view matrix 
+  shaderCubeProgram.mvMatrixUniform = gl.getUniformLocation(shaderCubeProgram, "uMVMatrix");
+
+
 }
 
 //
@@ -182,6 +208,12 @@ function drawScene() {
   // Draw the cube.
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
-  pyr.draw();
-  pyr2.draw();
+
+  pyramids.forEach((pyramid) => {
+    pyramid.draw();
+  })
+
+  cubes.forEach((cube) => {
+    cube.draw();
+  })
 }
