@@ -42,20 +42,20 @@ function handleKeys() {
 
   if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
     // Left cursor key or A
-    friendlyPlayers[0].xPos += movementSpeedWASD;
+    pyr.xPos += movementSpeedWASD;
   } else if (currentlyPressedKeys[39] || currentlyPressedKeys[68]) {
     // Right cursor key or D
-    friendlyPlayers[0].xPos -= movementSpeedWASD;
+    pyr.xPos -= movementSpeedWASD;
   } else {
     yawRate = 0;
   }
 
   if (currentlyPressedKeys[38] || currentlyPressedKeys[87]) {
     // Up cursor key or W
-    friendlyPlayers[0].yPos -= movementSpeedWASD;
+    pyr.yPos -= movementSpeedWASD;
   } else if (currentlyPressedKeys[40] || currentlyPressedKeys[83]) {
     // Down cursor key
-    friendlyPlayers[0].yPos += movementSpeedWASD;
+    pyr.yPos += movementSpeedWASD;
   } else {
     speed = 0;
   }

@@ -25,7 +25,7 @@ var lastTime = 0;
 var effectiveFPMS = 60 / 1000;
 
 // Variable that stores  loading state of textures.
-var texturesLoaded = false;
+var worldTexturesLoaded = false;
 
 // Helper variable for animation
 var lastTime = 0;
@@ -77,6 +77,19 @@ canvasSizeY = 720;
 playgroundSizeX = 5;
 playgroundSizeY = 5;
 
+
+function checkIfAllTexturesLoaded() {
+  // check world
+  // check pyr
+  // check cube
+  // check hotspots
+
+  if (worldTexturesLoaded && pyrTexturesLoaded && cubeTexturesLoaded && hotspotTexturesLoaded) {
+    return true;
+  }
+  return false;
+}
+
 //
 // start
 //
@@ -101,20 +114,21 @@ function start() {
     // Next, load and set up the textures we'll be using.
     initWorldTextures();
     initPyramidTextures();
-
-    initPlayerBuffers();
+    initCubeTextures();
+    initHotspotTextures();
 
     // Initialise world objects
     loadWorld();
-    initPlayerObjects();
 
     // Bind keyboard handling functions to document handlers
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
+    pyr = new PlayerObject('PYR', 0, -2.0, 1, 1, 1);
+    pyr2 = new PlayerObject('PYR', 1, -2.0, 1, 1, 1);
 
     // Set up to draw the scene periodically.
     setInterval(function() {
-      if (texturesLoaded) { // only draw scene and animate when textures are loaded.
+      if (checkIfAllTexturesLoaded()) { // only draw scene and animate when textures are loaded.
         requestAnimationFrame(animate);
         handleKeys();
         mouseMovePlayground();

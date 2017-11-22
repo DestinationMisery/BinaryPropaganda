@@ -123,22 +123,6 @@ function getShader(gl, id) {
   return shader;
 }
 
-function handleTextureLoaded(texture) {
-  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-
-  // Third texture usus Linear interpolation approximation with nearest Mipmap selection
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.generateMipmap(gl.TEXTURE_2D);
-
-  gl.bindTexture(gl.TEXTURE_2D, null);
-
-  // when texture loading is finished we can draw scene.
-  texturesLoaded = true;
-}
-
 //
 // setMatrixUniforms
 //
@@ -198,9 +182,6 @@ function drawScene() {
   // Draw the cube.
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
-
-  // Initializes drawing players objects
-  for (var i in friendlyPlayers) {
-    friendlyPlayers[i].draw();
-  }
+  pyr.draw();
+  pyr2.draw();
 }

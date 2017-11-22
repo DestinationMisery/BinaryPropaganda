@@ -85,16 +85,6 @@ function movePlayerTo(player, xDesired, zDesired, speed /* from 1 to 1000 */) {
 // the texture images. The handleTextureLoaded() callback will finish
 // the job; it gets called each time a texture finishes loading.
 //
-
-function initPyramidTextures() {
-  playerTexture = gl.createTexture();
-  playerTexture.image = new Image();
-  playerTexture.image.onload = function () {
-    handleTextureLoaded(playerTexture)
-  }
-  playerTexture.image.src = "./assets/star.gif";
-}
-
 function initPlayerObjects() {
   var numfriendlyPlayers = 1;
 
