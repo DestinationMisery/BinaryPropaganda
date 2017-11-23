@@ -12,6 +12,10 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father) {
   if(father != null)
     this.father = father;
 
+  this.hoverRange = 0.3;
+  this.yPosHoverDown = this.yPos-this.hoverRange;
+  this.goingDown = true;
+
 }
 
 
@@ -75,15 +79,25 @@ PlayerObject.prototype.draw = function () {
 
   mvPopMatrix();
 
-  this.hover(framesPassed);
+  this.hover();
 }
 
-PlayerObject.prototype.hover = function (elapsed) {
-  if (elapsed < 50) {
-    this.yPos += 0.25/50;
-  } else {
-    this.yPos -= 0.25/50;
+PlayerObject.prototype.hover = function () {
+
+  if(this.goingDown && this.yPos > this.yPosHoverDown){
+    this.yPos -= 0.35/50;
   }
+  else{
+    this.goingDown = false;
+  }
+
+  if(this.goingDown == false && this.yPos < this.yPosHoverDown + this.hoverRange){
+    this.yPos += 0.35/50;
+  }
+  else{
+    this.goingDown = true;
+  }
+  
 
   if(this.type === "CUBE"){
     this.rotX += 1 * (1/Math.pow(this.scale, 2)) / 10;
