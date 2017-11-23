@@ -1,4 +1,4 @@
-function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father) {
+function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father, health) {
   this.type = type;
   this.scale = size;
   this.xPos = xPos;
@@ -12,10 +12,12 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father) {
   if(father != null)
     this.father = father;
 
+  this.health = health;
+
   this.gunOnCooldown = false;
   this.gunCooldownTime =1000; // ms
 
-  this.shootRange = 1000;
+  this.shootRange = 10000;
 
   this.lastShot = 0;
 }
@@ -33,6 +35,12 @@ PlayerObject.prototype.move = function (dx, dz, delay) {
   }, 500);
 }
 
+PlayerObject.prototype.destroy = function () {
+  const arrayOfObjects = this.type === 'PYR' ? pyramids : cubes;
+  const indexInArray = arrayOfObjects.indexOf(this);
+  arrayOfObjects.splice(indexInArray, 1);
+}
+
 PlayerObject.prototype.autoShoot = function(cubes) {
   if (new Date().getTime() - this.lastShot >= this.gunCooldownTime) {
     let cubesWithDistances = [];
@@ -48,7 +56,7 @@ PlayerObject.prototype.autoShoot = function(cubes) {
         });
       }
     });
-    if (cubesWithDistances.length > 1) {
+    if (cubesWithDistances.length > 0) {
       let closestCube = null;
       let minDist = 1000000;
       cubesWithDistances.forEach((cube) => {
@@ -63,8 +71,6 @@ PlayerObject.prototype.autoShoot = function(cubes) {
 }
 
 PlayerObject.prototype.shoot = function(x, y, z) {
-  console.log(x, y, z)
-
   this.lastShot = new Date().getTime();
 
   let enemies = this.type === 'PYR' ? cubes : pyramids;

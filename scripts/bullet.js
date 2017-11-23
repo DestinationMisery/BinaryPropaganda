@@ -26,6 +26,7 @@ function Bullet(type, speed, scale, xPos, yPos, zPos, xDir, yDir, zDir, enemies)
 }
 
 Bullet.prototype.move = function () {
+
   this.xPos += this.xDir * this.speed;
   this.yPos += this.yDir * this.speed;
   this.zPos += this.zDir * this.speed;
@@ -35,6 +36,28 @@ Bullet.prototype.move = function () {
   if (iAmTooOld) {
     bullets.shift();
   }
+
+  this.checkCollisions();
+}
+
+Bullet.prototype.checkCollisions = function() {
+
+  this.enemies.forEach((enemy) => {
+    const distance = Math.sqrt( Math.pow( enemy.xPos - this.xPos, 2) + Math.pow( enemy.yPos - this.yPos, 2) + Math.pow( enemy.zPos - this.zPos, 2) )
+    const radiusSum = this.scale + enemy.scale;
+    if (distance < radiusSum) {
+      enemy.health -= 1;
+      this.destroy();
+      if (enemy.health == 0) {
+        enemy.destroy();
+      }
+    }
+  });
+}
+
+Bullet.prototype.destroy = function () {
+  const indexInArray = bullets.indexOf(this);
+  bullets.splice(indexInArray, 1);
 }
 
 Bullet.prototype.draw = function () {
