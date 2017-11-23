@@ -4,12 +4,12 @@ var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
 
 // Variables for storing current position and speed
-var pitch = -35;
+var pitch = -50;
 var pitchRate = 0;
 var yaw = 0;
 var yawRate = 0;
 var xPosition = 0;
-var yPosition = 7;
+var yPosition = 12;
 var zPosition = 0;
 var speed = 0;
 
