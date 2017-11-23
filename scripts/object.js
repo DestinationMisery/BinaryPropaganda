@@ -1,31 +1,28 @@
-function PlayerObject(type, size, xPos, yPos, height, r, g, b, rotX, rotY, rotZ, companions) {
+function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father) {
   this.type = type;
   this.scale = size;
-  this.height = height;
-  if (this.type === 'PYR') {
-    this.height = this.height;
-  }
   this.xPos = xPos;
   this.yPos = yPos;
-  this.r = 1;
-  this.g = 1;
-  this.b = 1;
+  this.zPos = zPos;
   this.texturesLoaded = false;
 
   this.rotX = rotX;
   this.rotY = rotY;
   this.rotZ = rotZ;
-  this.companions = companions;
+  if(father != null)
+    this.father = father;
+
 }
 
-PlayerObject.prototype.move = function (dx, dy, delay) {
+
+PlayerObject.prototype.move = function (dx, dz, delay) {
   this.xPos += dx;
-  this.yPos += dy;
+  this.zPos += dz;
 
   setTimeout(() => {
     // minions are a bit behind you
     this.companions.forEach((companion) => {
-      companion.move(dx, dy, Math.random() * 1000);
+      companion.move(dx, dz, Math.random() * 1000);
     });
   }, 500);
 }
@@ -50,7 +47,7 @@ PlayerObject.prototype.draw = function () {
   mvPushMatrix();
 
 
-  mat4.translate(mvMatrix, [this.xPos, this.height, this.yPos]);  
+  mat4.translate(mvMatrix, [this.xPos, this.yPos, this.zPos]);  
 
   mat4.rotate(mvMatrix, degToRad(this.rotX), [1, 0, 0]);
   mat4.rotate(mvMatrix, degToRad(this.rotY), [0, 1, 0]);
@@ -83,9 +80,9 @@ PlayerObject.prototype.draw = function () {
 
 PlayerObject.prototype.hover = function (elapsed) {
   if (elapsed < 50) {
-    this.height += 0.25/50;
+    this.yPos += 0.25/50;
   } else {
-    this.height -= 0.25/50;
+    this.yPos -= 0.25/50;
   }
 
   if(this.type === "CUBE"){

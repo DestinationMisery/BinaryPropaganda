@@ -129,17 +129,24 @@ function start() {
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
 
-    pyramids.push(new PlayerObject('PYR', 0.25, 0.6, -7.0, 0.6, 1, 1, 1, 0, 0, 180, []));
-    pyramids.push(new PlayerObject('PYR', 0.19, 1.0, -8, 0.5, 1, 1, 1, 0, 0, 180, []));
-    pyramids.push(new PlayerObject('PYR', 0.21, -1, -7, 0.6, 1, 1, 1, 0, 0, 180, []));
-    pyramids.push(new PlayerObject('PYR', 0.3, 0, -8.6, 0.6, 1, 1, 1, 0, 0, 180, [pyramids[0], pyramids[1], pyramids[2]])); // the main one is last
+    let fatherPyr = new PlayerObject('PYR', 0.4, 0.6, 0.6, -7.0, 0, 0, 180, null);
+    pyramids.push(fatherPyr);
+    for(let i = 0; i < 3; i++){
+      let x = fatherPyr.xPos -1 + i*0.5;
+      let y = 0.6;
+      let z = fatherPyr.zPos +5 - i*1.2;
+      pyramids.push(new PlayerObject('PYR', Math.random() * 0.25 + 0.10, x, y, z, 0, 0, 180, fatherPyr));
+    }
 
-    cubes.push(new PlayerObject('CUBE', 0.25, 0.6, -12.0, 0.6, 1, 1, 1, 0, 0, 0, []));
-    cubes.push(new PlayerObject('CUBE', 0.19, 1.0, -13, 0.5, 1, 1, 1, 0, 0, 0, []));
-    cubes.push(new PlayerObject('CUBE', 0.21, -1, -12, 0.6, 1, 1, 1, 0, 0, 0, []));
-    cubes.push(new PlayerObject('CUBE', 0.3, 0, -13.6, 0.6, 1, 1, 1, 0, 0, 0, [cubes[0], cubes[1], cubes[2]])); // the main one is last
-
-    cubes[cubes.length - 1].executePath(randomPyramidPath, 14);
+    let fatherCube = new PlayerObject('CUBE', 0.4, 0.6, 0.6, -12.0, 0, 0, 0, null);
+    cubes.push(fatherCube);
+    for(let i = 0; i < 3; i++){
+      let x = fatherCube.xPos -1 + i*0.5;
+      let y = 0.6;
+      let z = fatherCube.zPos -5 + i*1.2;
+      cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.10, x, y, z, 0, 0, 0, fatherCube));
+    }
+    //cubes[cubes.length - 1].executePath(randomPyramidPath, 14);
 
     // Set up to draw the scene periodically.
     setInterval(function() {
