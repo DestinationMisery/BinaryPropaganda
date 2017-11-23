@@ -99,6 +99,7 @@ function checkIfAllTexturesLoaded() {
 
 let pyramids = []
 let cubes = []
+let bullets = []
 
 //
 function start() {

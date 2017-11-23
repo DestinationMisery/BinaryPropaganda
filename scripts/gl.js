@@ -214,10 +214,16 @@ function drawScene() {
 
   pyramids.forEach((pyramid) => {
     pyramid.draw();
+    pyramid.autoShoot(cubes);
   })
 
   cubes.forEach((cube) => {
     cube.draw();
+  })
+
+  bullets.forEach((bullet) => {
+    bullet.move();
+    bullet.draw();
   })
 
 }

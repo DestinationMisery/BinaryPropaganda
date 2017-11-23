@@ -1,81 +1,43 @@
-function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father) {
-  this.type = type;
-  this.scale = size;
-  this.xPos = xPos;
-  this.yPos = yPos;
-  this.zPos = zPos;
-  this.texturesLoaded = false;
+function Bullet(type, speed, scale, xPos, yPos, zPos, xDir, yDir, zDir, enemies) {
+    this.type = type;
+    this.speed = speed;
+    this.scale = scale;
+    this.xPos = xPos;
+    this.yPos = yPos;
+    this.zPos = zPos;
 
-  this.rotX = rotX;
-  this.rotY = rotY;
-  this.rotZ = rotZ;
-  if(father != null)
-    this.father = father;
+    this.xDir = xDir;
+    this.yDir = yDir;
+    this.zDir = zDir;
 
-  this.gunOnCooldown = false;
-  this.gunCooldownTime =1000; // ms
+    const vecLength = Math.sqrt( Math.pow( this.xDir, 2) + Math.pow( this.yDir, 2) + Math.pow( this.zDir, 2) );
+    this.xDir = xDir / vecLength;
+    this.yDir = yDir / vecLength;
+    this.zDir = zDir / vecLength;
 
-  this.shootRange = 1000;
+    this.enemies = enemies;
 
-  this.lastShot = 0;
+    this.rotX = 0;
+    this.rotY = 0;
+    this.rotZ = 0;
+
+    this.lifetime = 3000;
+    this.shot = new Date().getTime();
 }
 
+Bullet.prototype.move = function () {
+  this.xPos += this.xDir * this.speed;
+  this.yPos += this.yDir * this.speed;
+  this.zPos += this.zDir * this.speed;
 
-PlayerObject.prototype.move = function (dx, dz, delay) {
-  this.xPos += dx;
-  this.zPos += dz;
+  const iAmTooOld = new Date().getTime() - this.shot >= this.lifetime;
 
-  setTimeout(() => {
-    // minions are a bit behind you
-    this.companions.forEach((companion) => {
-      companion.move(dx, dz, Math.random() * 1000);
-    });
-  }, 500);
-}
-
-PlayerObject.prototype.autoShoot = function(cubes) {
-  if (new Date().getTime() - this.lastShot >= this.gunCooldownTime) {
-    let cubesWithDistances = [];
-    cubes.forEach((cube) => {
-      const dx = cube.xPos - this.xPos;
-      const dy = cube.yPos - this.yPos;
-      const dz = cube.zPos - this.zPos;
-      const distance = Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2);
-      if (distance <= this.shootRange) {
-        cubesWithDistances.push({
-          cube,
-          distance
-        });
-      }
-    });
-    if (cubesWithDistances.length > 1) {
-      let closestCube = null;
-      let minDist = 1000000;
-      cubesWithDistances.forEach((cube) => {
-        if (cube.distance < minDist) {
-          minDist = cube.distance;
-          closestCube = cube;
-        }
-      });
-      this.shoot(closestCube.cube.xPos, closestCube.cube.yPos, closestCube.cube.zPos);
-    }
+  if (iAmTooOld) {
+    bullets.shift();
   }
 }
 
-PlayerObject.prototype.shoot = function(x, y, z) {
-  console.log(x, y, z)
-
-  this.lastShot = new Date().getTime();
-
-  let enemies = this.type === 'PYR' ? cubes : pyramids;
-  
-  // TODO
-  bullets.push(new Bullet(this.type, 0.05, 0.1, this.xPos, this.yPos, this.zPos, x-this.xPos, y-this.yPos, z-this.zPos, enemies));
-
-  
-}
-
-PlayerObject.prototype.draw = function () {
+Bullet.prototype.draw = function () {
 
   switch (this.type) {
     case 'PYR':
@@ -100,11 +62,6 @@ PlayerObject.prototype.draw = function () {
   mat4.rotate(mvMatrix, degToRad(this.rotX), [1, 0, 0]);
   mat4.rotate(mvMatrix, degToRad(this.rotY), [0, 1, 0]);
   mat4.rotate(mvMatrix, degToRad(this.rotZ), [0, 0, 1]);
-
-
-  
-
-  // gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
   
   switch (this.type) {
     case 'PYR':
@@ -122,26 +79,9 @@ PlayerObject.prototype.draw = function () {
   }
 
   mvPopMatrix();
-
-  this.hover(framesPassed);
 }
 
-PlayerObject.prototype.hover = function (elapsed) {
-  if (elapsed < 50) {
-    this.yPos += 0.25/50;
-  } else {
-    this.yPos -= 0.25/50;
-  }
-
-  if(this.type === "CUBE"){
-    this.rotX += 1 * (1/Math.pow(this.scale, 2)) / 10;
-    this.rotZ += 1 * (1/Math.pow(this.scale, 2)) / 10;
-  }
-
-  this.rotY += 1 * (1/Math.pow(this.scale, 2)) / 5;
-};
-
-PlayerObject.prototype.setPyrVerticesAndTextureCoordinates = function() {
+Bullet.prototype.setPyrVerticesAndTextureCoordinates = function() {
   // pyramid vertices
   this.vertices = [
     // Front face
@@ -188,7 +128,7 @@ PlayerObject.prototype.setPyrVerticesAndTextureCoordinates = function() {
   ];
 }
 
-PlayerObject.prototype.setCubeVerticesAndTextureCoordinates = function() {
+Bullet.prototype.setCubeVerticesAndTextureCoordinates = function() {
   // pyramid vertices
   this.vertices = [
     // Front face
@@ -251,7 +191,7 @@ PlayerObject.prototype.setCubeVerticesAndTextureCoordinates = function() {
   ];
 }
 
-PlayerObject.prototype.initPyramidBuffer = function() {
+Bullet.prototype.initPyramidBuffer = function() {
   // Create a buffer for the square placeholder's vertices.
   this.friendlyPlayerVertexPositionBuffer = gl.createBuffer();
   
@@ -276,7 +216,7 @@ PlayerObject.prototype.initPyramidBuffer = function() {
   this.friendlyPlayerVertexTextureCoordBuffer.numItems = 4;
 }
 
-PlayerObject.prototype.initCubeBuffer = function() {
+Bullet.prototype.initCubeBuffer = function() {
   
   this.cubeVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
@@ -321,7 +261,7 @@ PlayerObject.prototype.initCubeBuffer = function() {
   this.cubeVertexIndexBuffer.numItems = 36;
 }
 
-PlayerObject.prototype.drawPyrPlayerObject = function(playerTexture) {
+Bullet.prototype.drawPyrPlayerObject = function(playerTexture) {
   gl.useProgram(shaderProgram);
   // Activate texture
   gl.activeTexture(gl.TEXTURE0);
@@ -343,7 +283,7 @@ PlayerObject.prototype.drawPyrPlayerObject = function(playerTexture) {
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.friendlyPlayerVertexPositionBuffer.numItems);
 }
 
-PlayerObject.prototype.drawCubePlayerObject = function(playerTexture) {
+Bullet.prototype.drawCubePlayerObject = function(playerTexture) {
 
   gl.useProgram(shaderCubeProgram);
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
