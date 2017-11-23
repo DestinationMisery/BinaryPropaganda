@@ -1,9 +1,9 @@
-function PlayerObject(type, size, xPos, yPos, height, r, g, b, companions) {
+function PlayerObject(type, size, xPos, yPos, height, r, g, b, rotX, rotY, rotZ, companions) {
   this.type = type;
   this.scale = size;
   this.height = height;
   if (this.type === 'PYR') {
-    this.height = -this.height;
+    this.height = this.height;
   }
   this.xPos = xPos;
   this.yPos = yPos;
@@ -11,6 +11,10 @@ function PlayerObject(type, size, xPos, yPos, height, r, g, b, companions) {
   this.g = 1;
   this.b = 1;
   this.texturesLoaded = false;
+
+  this.rotX = rotX;
+  this.rotY = rotY;
+  this.rotZ = rotZ;
   this.companions = companions;
 }
 
@@ -45,12 +49,19 @@ PlayerObject.prototype.draw = function () {
 
   mvPushMatrix();
 
+
+  mat4.translate(mvMatrix, [this.xPos, this.height, this.yPos]);  
+
   if (this.type === 'PYR') {
     // Rotating around z axis for 180 degrees (flipping upside down)
-    mat4.rotate(mvMatrix, degToRad(180), [0, 0, 1]);
+    
+    mat4.rotate(mvMatrix, degToRad(this.rotX), [1, 0, 0]);
+    mat4.rotate(mvMatrix, degToRad(this.rotY), [0, 1, 0]);
+    mat4.rotate(mvMatrix, degToRad(this.rotZ), [0, 0, 1]);
   }
 
-  mat4.translate(mvMatrix, [this.xPos, this.height, this.yPos]);
+
+  
 
   // gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
   

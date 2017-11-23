@@ -176,6 +176,7 @@ function drawScene() {
     return;
   }
   
+
   gl.useProgram(shaderProgram);
   // Establish the perspective with which we want to view the
   // scene. Our field of view is 45 degrees, with a width/height
@@ -186,7 +187,7 @@ function drawScene() {
   // Set the drawing position to the "identity" point, which is
   // the center of the scene.
   mat4.identity(mvMatrix);
-
+  
   // Now move the drawing position a bit to where we want to start
   // drawing the world.
   mat4.rotate(mvMatrix, degToRad(-pitch), [1, 0, 0]);
@@ -218,4 +219,5 @@ function drawScene() {
   cubes.forEach((cube) => {
     cube.draw();
   })
+
 }
