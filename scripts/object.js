@@ -88,6 +88,11 @@ PlayerObject.prototype.hover = function (elapsed) {
     this.height -= 0.25/50;
   }
 
+  if(this.type === "CUBE"){
+    this.rotX += 1 * (1/Math.pow(this.scale, 2)) / 10;
+    this.rotZ += 1 * (1/Math.pow(this.scale, 2)) / 10;
+  }
+
   this.rotY += 1 * (1/Math.pow(this.scale, 2)) / 5;
 };
 
