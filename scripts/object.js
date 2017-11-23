@@ -84,6 +84,8 @@ PlayerObject.prototype.draw = function () {
 
 PlayerObject.prototype.hover = function () {
 
+
+
   if(this.goingDown && this.yPos > this.yPosHoverDown){
     this.yPos -= 0.35/50;
   }
