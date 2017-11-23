@@ -42,10 +42,10 @@ function handleKeys() {
 
   if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
     // Left cursor key or A
-    pyramids[pyramids.length-1].move(movementSpeedWASD, 0);
+    pyramids[pyramids.length-1].move(-movementSpeedWASD, 0);
   } else if (currentlyPressedKeys[39] || currentlyPressedKeys[68]) {
     // Right cursor key or D
-    pyramids[pyramids.length-1].move(-movementSpeedWASD, 0);
+    pyramids[pyramids.length-1].move(movementSpeedWASD, 0);
   } else {
     yawRate = 0;
   }
