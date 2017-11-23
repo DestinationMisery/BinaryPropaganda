@@ -23,6 +23,12 @@ function Bullet(type, speed, scale, xPos, yPos, zPos, xDir, yDir, zDir, enemies)
 
     this.lifetime = 3000;
     this.shot = new Date().getTime();
+
+    this.friendlyPlayerVertexPositionBuffer = gl.createBuffer();
+    this.friendlyPlayerVertexTextureCoordBuffer = gl.createBuffer();
+    this.cubeVertexPositionBuffer = gl.createBuffer();
+    this.cubeVertexColorBuffer = gl.createBuffer();
+    this.cubeVertexIndexBuffer = gl.createBuffer();
 }
 
 Bullet.prototype.move = function () {
@@ -219,7 +225,7 @@ Bullet.prototype.setCubeVerticesAndTextureCoordinates = function() {
 
 Bullet.prototype.initPyramidBuffer = function() {
   // Create a buffer for the square placeholder's vertices.
-  this.friendlyPlayerVertexPositionBuffer = gl.createBuffer();
+  
   
   // Select the friendlyPlayerVertexPositionBuffer as the one to apply vertex
   // operations to from here out.
@@ -233,7 +239,7 @@ Bullet.prototype.initPyramidBuffer = function() {
   this.friendlyPlayerVertexPositionBuffer.numItems = 12;
 
   // Map the texture onto the square placeholder's faces.
-  this.friendlyPlayerVertexTextureCoordBuffer = gl.createBuffer();
+  
   gl.bindBuffer(gl.ARRAY_BUFFER, this.friendlyPlayerVertexTextureCoordBuffer);
   
   // Pass the texture coordinates into WebGL
@@ -244,14 +250,14 @@ Bullet.prototype.initPyramidBuffer = function() {
 
 Bullet.prototype.initCubeBuffer = function() {
   
-  this.cubeVertexPositionBuffer = gl.createBuffer();
+  
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
  
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
   this.cubeVertexPositionBuffer.itemSize = 3;
   this.cubeVertexPositionBuffer.numItems = 24;
 
-  this.cubeVertexColorBuffer = gl.createBuffer();
+  
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexColorBuffer);
   colors = [
       [1.0, 0.0, 0.0, 1.0], // Front face
@@ -272,7 +278,7 @@ Bullet.prototype.initCubeBuffer = function() {
   this.cubeVertexColorBuffer.itemSize = 4;
   this.cubeVertexColorBuffer.numItems = 24;
 
-  this.cubeVertexIndexBuffer = gl.createBuffer();
+  
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
   this.cubeVertexIndices = [
       0, 1, 2,      0, 2, 3,    // Front face

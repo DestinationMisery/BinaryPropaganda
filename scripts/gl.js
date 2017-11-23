@@ -219,6 +219,7 @@ function drawScene() {
 
   cubes.forEach((cube) => {
     cube.draw();
+    cube.autoShoot(pyramids);
   })
 
   bullets.forEach((bullet) => {

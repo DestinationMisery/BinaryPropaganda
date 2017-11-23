@@ -9,21 +9,26 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father, he
   this.rotX = rotX;
   this.rotY = rotY;
   this.rotZ = rotZ;
-  if(father != null)
-    this.father = father;
+  this.father = father;
 
   this.health = health;
 
   this.gunOnCooldown = false;
   this.gunCooldownTime =1000; // ms
 
-  this.shootRange = 10000;
+  this.shootRange = 100;
 
   this.lastShot = 0;
 
   this.hoverRange = 0.3;
   this.yPosHoverDown = this.yPos-this.hoverRange;
   this.goingDown = true;
+
+  this.friendlyPlayerVertexPositionBuffer = gl.createBuffer();
+  this.friendlyPlayerVertexTextureCoordBuffer = gl.createBuffer();
+  this.cubeVertexPositionBuffer = gl.createBuffer();
+  this.cubeVertexColorBuffer = gl.createBuffer();
+  this.cubeVertexIndexBuffer = gl.createBuffer();
 }
 
 
@@ -40,6 +45,17 @@ PlayerObject.prototype.move = function (dx, dz, delay) {
 }
 
 PlayerObject.prototype.destroy = function () {
+  
+  if (this.father === null) {
+    // je suis papi
+    const winners = this.type === 'PYR' ? 'Pyramids' : 'Cubes';
+    let playAgain = confirm(`End of game! ${winners} have won! Play again?`);
+    if (playAgain) {
+      window.location.reload();
+    }
+    
+  }
+
   const arrayOfObjects = this.type === 'PYR' ? pyramids : cubes;
   const indexInArray = arrayOfObjects.indexOf(this);
   arrayOfObjects.splice(indexInArray, 1);
@@ -275,7 +291,7 @@ PlayerObject.prototype.setCubeVerticesAndTextureCoordinates = function() {
 
 PlayerObject.prototype.initPyramidBuffer = function() {
   // Create a buffer for the square placeholder's vertices.
-  this.friendlyPlayerVertexPositionBuffer = gl.createBuffer();
+  
   
   // Select the friendlyPlayerVertexPositionBuffer as the one to apply vertex
   // operations to from here out.
@@ -289,7 +305,7 @@ PlayerObject.prototype.initPyramidBuffer = function() {
   this.friendlyPlayerVertexPositionBuffer.numItems = 12;
 
   // Map the texture onto the square placeholder's faces.
-  this.friendlyPlayerVertexTextureCoordBuffer = gl.createBuffer();
+  
   gl.bindBuffer(gl.ARRAY_BUFFER, this.friendlyPlayerVertexTextureCoordBuffer);
   
   // Pass the texture coordinates into WebGL
@@ -300,14 +316,14 @@ PlayerObject.prototype.initPyramidBuffer = function() {
 
 PlayerObject.prototype.initCubeBuffer = function() {
   
-  this.cubeVertexPositionBuffer = gl.createBuffer();
+  
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
  
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
   this.cubeVertexPositionBuffer.itemSize = 3;
   this.cubeVertexPositionBuffer.numItems = 24;
 
-  this.cubeVertexColorBuffer = gl.createBuffer();
+  
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexColorBuffer);
   colors = [
       [1.0, 0.0, 0.0, 1.0], // Front face
@@ -328,7 +344,7 @@ PlayerObject.prototype.initCubeBuffer = function() {
   this.cubeVertexColorBuffer.itemSize = 4;
   this.cubeVertexColorBuffer.numItems = 24;
 
-  this.cubeVertexIndexBuffer = gl.createBuffer();
+  
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.cubeVertexIndexBuffer);
   this.cubeVertexIndices = [
       0, 1, 2,      0, 2, 3,    // Front face
