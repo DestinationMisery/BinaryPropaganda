@@ -52,13 +52,9 @@ PlayerObject.prototype.draw = function () {
 
   mat4.translate(mvMatrix, [this.xPos, this.height, this.yPos]);  
 
-  if (this.type === 'PYR') {
-    // Rotating around z axis for 180 degrees (flipping upside down)
-    
-    mat4.rotate(mvMatrix, degToRad(this.rotX), [1, 0, 0]);
-    mat4.rotate(mvMatrix, degToRad(this.rotY), [0, 1, 0]);
-    mat4.rotate(mvMatrix, degToRad(this.rotZ), [0, 0, 1]);
-  }
+  mat4.rotate(mvMatrix, degToRad(this.rotX), [1, 0, 0]);
+  mat4.rotate(mvMatrix, degToRad(this.rotY), [0, 1, 0]);
+  mat4.rotate(mvMatrix, degToRad(this.rotZ), [0, 0, 1]);
 
 
   
@@ -91,6 +87,8 @@ PlayerObject.prototype.hover = function (elapsed) {
   } else {
     this.height -= 0.25/50;
   }
+
+  this.rotY += 1 * (1/Math.pow(this.scale, 2)) / 5;
 };
 
 PlayerObject.prototype.setPyrVerticesAndTextureCoordinates = function() {
