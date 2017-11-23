@@ -76,7 +76,7 @@ PlayerObject.prototype.shoot = function(x, y, z) {
   let enemies = this.type === 'PYR' ? cubes : pyramids;
   
   // TODO
-  bullets.push(new Bullet(this.type, 0.05, 0.1, this.xPos, this.yPos, this.zPos, x-this.xPos, y-this.yPos, z-this.zPos, enemies));
+  bullets.push(new Bullet(this.type, 0.05, 0.05, this.xPos, this.yPos, this.zPos, x-this.xPos, y-this.yPos, z-this.zPos, enemies));
 
   
 }

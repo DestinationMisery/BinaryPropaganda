@@ -31,6 +31,9 @@ Bullet.prototype.move = function () {
   this.yPos += this.yDir * this.speed;
   this.zPos += this.zDir * this.speed;
 
+  this.rotX += 10;
+  this.rotY += 10;
+
   const iAmTooOld = new Date().getTime() - this.shot >= this.lifetime;
 
   if (iAmTooOld) {
