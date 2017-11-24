@@ -70,15 +70,23 @@ function mouseMovePlayground(e) {
     
     if (outLeft) {
       xPosition -= mouseMoveSpeed;
+      if(xPosition < -19.0) // stop camera from moving over borders
+        xPosition += mouseMoveSpeed;
     }
     if (outUp) {
       zPosition -= mouseMoveSpeed;
+      if(zPosition < -10.0)
+        zPosition += mouseMoveSpeed;
     }
     if (outRight) {
       xPosition += mouseMoveSpeed;
+      if(xPosition > 19.0)
+        xPosition-= mouseMoveSpeed;
     }
     if (outDown) {
       zPosition += mouseMoveSpeed;
+      if(zPosition > 30.0)
+        zPosition -= mouseMoveSpeed;
     }
 
   }
