@@ -151,8 +151,8 @@ function start() {
     borders.push(new Border(-25.0, 0.5, 0.0, 0, 90, 0, 25.5, 1.0, 0.5)); //left
     borders.push(new Border(25.0, 0.5, 0.0, 0, 90, 0, 25.5, 1.0, 0.5)); //right
 
-    let fps = Math.ceil(1000/15);
-    let hotspotFillRate = Math.ceil(1/fps);
+    let fps = 1000/15;
+    let hotspotFillRate = 1/fps;
     
     hotspots.push(new Hotspot(-0.2, -10, 4, 5*hotspotFillRate));
 
