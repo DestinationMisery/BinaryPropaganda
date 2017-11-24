@@ -90,7 +90,7 @@ function initHotspotTextures() {
   hotspotTexture.image.onload = function () {
     hotspotHandleTextureLoaded(hotspotTexture);
   }
-  hotspotTexture.image.src = "./assets/star.gif";
+  hotspotTexture.image.src = "./assets/metki.jpg";
 }
 
 function hotspotHandleTextureLoaded (texture) {

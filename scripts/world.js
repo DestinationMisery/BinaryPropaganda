@@ -11,7 +11,7 @@ function initWorldTextures() {
   wallTexture.image.onload = function () {
     worldHandleTextureLoaded(wallTexture)
   }
-  wallTexture.image.src = "./assets/floor_of_the_future.jpg";
+  wallTexture.image.src = "./assets/floor_tavcer.jpg";
 }
 
 //
