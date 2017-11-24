@@ -565,7 +565,6 @@ PlayerObject.prototype.fillBulletsIfPossible = function (hotspots) {
     const zLowerBound = hotspot.zPos - hotspot.scale/2;
     const zUpperBound = hotspot.zPos + hotspot.scale/2;
     if (this.xPos >= xLowerBound && this.xPos <= xUpperBound && this.zPos >= zLowerBound && this.zPos <= zUpperBound) {
-      console.log(hotspot.fillRate)
       this.ammo += hotspot.fillRate;
     }
   });
