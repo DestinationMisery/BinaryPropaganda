@@ -101,6 +101,7 @@ let pyramids = []
 let cubes = []
 let bullets = []
 let hotspots = []
+let borders = []
 
 //
 function start() {
@@ -143,6 +144,11 @@ function start() {
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.9, 1.5, -22.0, 0, 0, 0, fatherCube, 3));
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.4, 1.1, -16.0, 0, 0, 0, fatherCube, 3));
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, 2.8, 1.3, -18.5, 0, 0, 0, fatherCube, 3));
+                            //x,  y,   z,  rX,rY,rZ  scX,  scY,  scZ
+    borders.push(new Border(0.0, 0.0, 25.0, 0, 0, 0, 25.5, 1.5, 0.5)); //top
+    borders.push(new Border(0.0, 0.0, -25.0, 0, 0, 0, 25.5, 1.5, 0.5)); //bottom
+    borders.push(new Border(-25.0, 0.0, 0.0, 0, 90, 0, 25.5, 1.5, 0.5)); //left
+    borders.push(new Border(25.0, 0.0, 0.0, 0, 90, 0, 25.5, 1.5, 0.5)); //right
 
     let fps = Math.ceil(1000/15);
     let hotspotFillRate = Math.ceil(1/fps);
