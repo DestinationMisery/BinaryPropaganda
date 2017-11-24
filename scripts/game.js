@@ -100,6 +100,7 @@ function checkIfAllTexturesLoaded() {
 let pyramids = []
 let cubes = []
 let bullets = []
+let hotspots = []
 
 //
 function start() {
@@ -137,13 +138,18 @@ function start() {
     pyramids.push(new PlayerObject('PYR', Math.random() * 0.25 + 0.15, 2.0, 1.2, -5.3, 0, 0, 180, fatherPyr, 3));
 
 
-
     let fatherCube = new PlayerObject('CUBE', 0.4, 0.7, 1.2, -19.0, 0, 0, 0, null, 5);
     cubes.push(fatherCube);
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.9, 1.5, -22.0, 0, 0, 0, fatherCube, 3));
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.4, 1.1, -16.0, 0, 0, 0, fatherCube, 3));
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, 2.8, 1.3, -18.5, 0, 0, 0, fatherCube, 3));
 
+    let fps = Math.ceil(1000/15);
+    let hotspotFillRate = Math.ceil(1/fps);
+    
+    hotspots.push(new Hotspot(-0.2, -10, 2, hotspotFillRate));
+
+    //cubes[cubes.length - 1].executePath(randomPyramidPath, 14);
 
     // Set up to draw the scene periodically.
     setInterval(function() {

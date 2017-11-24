@@ -33,6 +33,13 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father, he
 
   this.lastShot = 0;
 
+  if (this.type === 'CUBE') {
+    this.ammo = 10000000000000;
+  } else {
+    this.ammo = 10;
+  }
+ 
+
   this.hoverRange = 0.3;
   this.yPosHoverDown = this.yPos-this.hoverRange;
   this.goingDown = true;
@@ -101,7 +108,7 @@ PlayerObject.prototype.destroy = function () {
 }
 
 PlayerObject.prototype.autoShoot = function(cubes) {
-  if (new Date().getTime() - this.lastShot >= this.gunCooldownTime) {
+  if (new Date().getTime() - this.lastShot >= this.gunCooldownTime && this.ammo > 0) {
     let cubesWithDistances = [];
     cubes.forEach((cube) => {
       const dx = cube.xPos - this.xPos;
@@ -131,6 +138,7 @@ PlayerObject.prototype.autoShoot = function(cubes) {
 
 PlayerObject.prototype.shoot = function(x, y, z) {
   this.lastShot = new Date().getTime();
+  this.ammo--;
 
   let enemies = this.type === 'PYR' ? cubes : pyramids;
   
@@ -536,5 +544,18 @@ PlayerObject.prototype.drawCubePlayerObject = function(playerTexture) {
   setMatrixUniformsCube();
   gl.drawElements(gl.TRIANGLES, this.cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 
+}
+
+PlayerObject.prototype.fillBulletsIfPossible = function (hotspots) {
+  hotspots.forEach((hotspot) => {
+    const xLowerBound = hotspot.xPos - hotspot.scale/2;
+    const xUpperBound = hotspot.xPos + hotspot.scale/2;
+
+    const zLowerBound = hotspot.zPos - hotspot.scale/2;
+    const zUpperBound = hotspot.zPos + hotspot.scale/2;
+    if (this.xPos >= xLowerBound && this.xPos <= xUpperBound && this.zPos >= zLowerBound && this.zPos <= zUpperBound) {
+      this.ammo += hotspot.fillRate;
+    }
+  });
 }
 

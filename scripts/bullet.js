@@ -67,6 +67,14 @@ Bullet.prototype.checkCollisions = function() {
 Bullet.prototype.destroy = function () {
   const indexInArray = bullets.indexOf(this);
   bullets.splice(indexInArray, 1);
+
+  gl.deleteBuffer(this.cubeVertexPositionBuffer);
+  gl.deleteBuffer(this.cubeVertexColorBuffer);
+  gl.deleteBuffer(this.cubeVertexIndexBuffer);
+
+  this.cubeVertexPositionBuffer = null;
+  this.cubeVertexColorBuffer = null;
+  this.cubeVertexIndexBuffer = null;
 }
 
 Bullet.prototype.draw = function () {
@@ -250,7 +258,7 @@ Bullet.prototype.initPyramidBuffer = function() {
 
 Bullet.prototype.initCubeBuffer = function() {
   
-  
+  if (!this.cubeVertexPositionBuffer) return;
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
  
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
@@ -316,7 +324,7 @@ Bullet.prototype.drawPyrPlayerObject = function(playerTexture) {
 }
 
 Bullet.prototype.drawCubePlayerObject = function(playerTexture) {
-
+  if (!this.cubeVertexPositionBuffer) return;
   gl.useProgram(shaderCubeProgram);
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexPositionBuffer);
   gl.vertexAttribPointer(shaderCubeProgram.vertexPositionAttribute, this.cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);

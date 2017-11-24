@@ -212,7 +212,9 @@ function drawScene() {
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
 
+  
   pyramids.forEach((pyramid) => {
+    pyramid.fillBulletsIfPossible(hotspots);
     pyramid.draw();
     pyramid.autoShoot(cubes);
   })
@@ -225,6 +227,10 @@ function drawScene() {
   bullets.forEach((bullet) => {
     bullet.move();
     bullet.draw();
+  })
+
+  hotspots.forEach((hotspot) => {
+    hotspot.draw();
   })
 
 }
