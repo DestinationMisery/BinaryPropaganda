@@ -145,8 +145,6 @@ function start() {
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.4, 1.1, -16.0, 0, 0, 0, fatherCube, 3));
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, 2.8, 1.3, -18.5, 0, 0, 0, fatherCube, 3));
 
-    let fps = 1000/15;
-    let hotspotFillRate = 1/fps;
                             //x,  y,   z,  rX,rY,rZ  scX,  scY,  scZ
     borders.push(new Border(0.0, 0.5, 25.0, 0, 0, 0, 25.5, 1.0, 0.5)); //top
     borders.push(new Border(0.0, 0.5, -25.0, 0, 0, 0, 25.5, 1.0, 0.5)); //bottom
