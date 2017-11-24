@@ -154,7 +154,7 @@ function start() {
     let fps = Math.ceil(1000/15);
     let hotspotFillRate = Math.ceil(1/fps);
     
-    hotspots.push(new Hotspot(-0.2, -10, 2, 5*hotspotFillRate));
+    hotspots.push(new Hotspot(-0.2, -10, 4, 5*hotspotFillRate));
 
     //cubes[cubes.length - 1].executePath(randomPyramidPath, 14);
 

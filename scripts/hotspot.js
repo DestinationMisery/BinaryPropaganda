@@ -38,10 +38,10 @@ Hotspot.prototype.draw = function () {
 
 Hotspot.prototype.setHotspotVerticesAndTextureCoordinates = function () {
   this.vertices = [
-    1.0,  1.0,  0.0,
-   -1.0,  1.0,  0.0,
-    1.0, -1.0,  0.0,
-   -1.0, -1.0,  0.0
+    this.scale,  this.scale,  0.0,
+   -this.scale,  this.scale,  0.0,
+    this.scale, -this.scale,  0.0,
+   -this.scale, -this.scale,  0.0
   ];
   this.textureCoords = [
     0.0, 0.0,
