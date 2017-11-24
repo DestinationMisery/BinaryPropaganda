@@ -5,11 +5,20 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father, he
   this.yPos = yPos;
   this.zPos = zPos;
   this.texturesLoaded = false;
+  this.speed = 0.03;
 
   this.rotX = rotX;
   this.rotY = rotY;
   this.rotZ = rotZ;
-  this.father = father;
+
+  if(father != null){
+    this.father = father;
+    this.offsetX = this.xPos - father.xPos;
+    this.offsetZ = this.zPos - father.zPos;
+    this.offsetY = this.yPos - father.yPos;
+    this.lastDestinationDesignationTime = new Date().getTime();
+    this.correctDesignationTime = 400;
+  }
 
   this.health = health;
 
@@ -32,16 +41,9 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father, he
 }
 
 
-PlayerObject.prototype.move = function (dx, dz, delay) {
-  this.xPos += dx;
-  this.zPos += dz;
-
-  setTimeout(() => {
-    // minions are a bit behind you
-    this.companions.forEach((companion) => {
-      companion.move(dx, dz, Math.random() * 1000);
-    });
-  }, 500);
+PlayerObject.prototype.move = function (dx, dz) {
+  this.xPos += dx * this.speed;
+  this.zPos += dz * this.speed;
 }
 
 PlayerObject.prototype.destroy = function () {
@@ -150,6 +152,80 @@ PlayerObject.prototype.draw = function () {
   mvPopMatrix();
 
   this.hover();
+  if(this.father != null){
+    this.moveTowardsFather();
+  }
+}
+
+PlayerObject.prototype.moveTowardsFather = function(){
+  if(new Date().getTime() - this.lastDestinationDesignationTime < this.correctDesignationTime){//don't change direction
+    //console.log(this.xPos);
+	if(this.desX == null)
+		return;
+  }
+  else{//change direction
+    this.lastDestinationDesignationTime = new Date().getTime();
+    this.correctDesignationTime = 400 * (Math.random() * 0.4 + 0.8);
+    this.desX = this.father.xPos + (Math.random() * 0.6 + 0.7) * this.offsetX;
+    this.desZ = this.father.zPos + (Math.random() * 0.6 + 0.7) * this.offsetZ;
+    this.desY = this.father.yPos + (Math.random() * 0.6 + 0.7) * this.offsetY;
+    //let dist = Math.sqrt(Math.pow(this.movX, 2) + Math.pow(this.movZ, 2) + Math.pow(this.movY, 2));
+    //let movXNorm = this.movX / dist;
+    //let movZNorm = this.movZ / dist;
+    //let movYNorm = this.movY / dist;
+  }
+
+  //move the object
+  this.xPos += (this.desX - this.xPos) * this.speed;
+  this.zPos += (this.desZ - this.zPos) * this.speed;
+  let noProblem = true;
+  //check collisions
+  for(var i in pyramids){
+    let pyramid = pyramids[i];
+    if(pyramid == this)
+      continue;
+
+    if(this.checkCollision(pyramid)){
+      noProblem = false;
+      break;
+    }
+  }
+
+  if(noProblem){
+    for(var i in cubes){
+      let cube = cubes[i];
+      if(cube == this)
+        continue;
+
+      if(this.checkCollision(cube)){
+        noProblem = false;
+        break;
+      }
+    }
+  }
+	let dist = Math.sqrt(Math.pow(this.xPos - this.desX, 2) + Math.pow(this.yPos - this.desY, 2));
+  if(!noProblem){//there is a collision, don't move.
+    console.log("problem");
+    this.xPos -= (this.desX - this.xPos) * this.speed;
+    this.yPos -= (this.desY - this.yPos) * this.speed;
+  }
+  else if(dist < 0.5){//very close to our destination, so will not move
+  	console.log("hashtag close");
+    this.xPos -= (this.desX - this.xPos) * this.speed;
+    this.yPos -= (this.desY - this.yPos) * this.speed;
+  }
+
+
+}
+
+PlayerObject.prototype.checkCollision = function (obj) {
+  let disX = obj.xPos - this.xPos;
+  let disZ = obj.zPos - this.zPos;
+  let distance = Math.sqrt(Math.pow(disX, 2) + Math.pow(disZ, 2));
+  if(this.scale + obj.scale > distance)
+    return true;
+
+  return false;
 }
 
 PlayerObject.prototype.hover = function () {

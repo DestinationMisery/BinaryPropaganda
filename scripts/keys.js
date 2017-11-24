@@ -1,8 +1,6 @@
 // Keyboard handling helper variable for reading the status of keys
 var currentlyPressedKeys = {};
 
-// WASD player speed of movement
-var movementSpeedWASD = 0.03;
 
 //
 // Keyboard handling helper functions
@@ -42,21 +40,17 @@ function handleKeys() {
 
   if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
     // Left cursor key or A
-    pyramids[pyramids.length-1].move(-movementSpeedWASD, 0);
+    pyramids[0].move(-1, 0);
   } else if (currentlyPressedKeys[39] || currentlyPressedKeys[68]) {
     // Right cursor key or D
-    pyramids[pyramids.length-1].move(movementSpeedWASD, 0);
-  } else {
-    yawRate = 0;
-  }
+    pyramids[0].move(1, 0);
+  } 
 
   if (currentlyPressedKeys[38] || currentlyPressedKeys[87]) {
     // Up cursor key or W
-    pyramids[pyramids.length-1].move(0, -movementSpeedWASD);
+    pyramids[0].move(0, -1);
   } else if (currentlyPressedKeys[40] || currentlyPressedKeys[83]) {
     // Down cursor key
-    pyramids[pyramids.length-1].move(0, movementSpeedWASD);
-  } else {
-    speed = 0;
-  }
+    pyramids[0].move(0, 1);
+  } 
 }
