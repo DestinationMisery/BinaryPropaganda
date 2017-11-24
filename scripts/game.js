@@ -101,6 +101,7 @@ let pyramids = []
 let cubes = []
 let bullets = []
 let hotspots = []
+let borders = []
 
 //
 function start() {
@@ -146,6 +147,14 @@ function start() {
 
     let fps = 1000/15;
     let hotspotFillRate = 1/fps;
+                            //x,  y,   z,  rX,rY,rZ  scX,  scY,  scZ
+    borders.push(new Border(0.0, 0.5, 25.0, 0, 0, 0, 25.5, 1.0, 0.5)); //top
+    borders.push(new Border(0.0, 0.5, -25.0, 0, 0, 0, 25.5, 1.0, 0.5)); //bottom
+    borders.push(new Border(-25.0, 0.5, 0.0, 0, 90, 0, 25.5, 1.0, 0.5)); //left
+    borders.push(new Border(25.0, 0.5, 0.0, 0, 90, 0, 25.5, 1.0, 0.5)); //right
+
+    let fps = Math.ceil(1000/15);
+    let hotspotFillRate = Math.ceil(1/fps);
     
     hotspots.push(new Hotspot(-0.2, -10, 2, 5*hotspotFillRate));
 

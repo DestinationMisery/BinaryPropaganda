@@ -233,4 +233,8 @@ function drawScene() {
     hotspot.draw();
   })
 
+  borders.forEach((border) => {
+    border.draw();
+  })
+
 }
