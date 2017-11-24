@@ -154,7 +154,10 @@ function start() {
     let fps = 1000/15;
     let hotspotFillRate = 1/fps;
     
-    hotspots.push(new Hotspot(-0.2, -10, 4, 5*hotspotFillRate));
+    hotspots.push(new Hotspot(-20, -20, 4, 5*hotspotFillRate));
+    hotspots.push(new Hotspot(20, -20, 4, 4*hotspotFillRate));
+    hotspots.push(new Hotspot(-20, 20, 4, 3*hotspotFillRate));
+    hotspots.push(new Hotspot(20, 20, 4, 5*hotspotFillRate));
 
     //cubes[cubes.length - 1].executePath(randomPyramidPath, 14);
 
