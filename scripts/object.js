@@ -19,6 +19,10 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father, he
     this.lastDestinationDesignationTime = new Date().getTime();
     this.correctDesignationTime = 400;
   }
+  else if(this.type === 'CUBE'){
+  	this.newPathTime = 4000;
+  	this.lastPathCorrection = 0;
+  }
 
   this.health = health;
 
@@ -142,6 +146,9 @@ PlayerObject.prototype.draw = function () {
   if(this.father != null){
     this.moveTowardsFather();
   }
+  else if(this.type === 'CUBE'){//instructions for father cube
+  	this.AIPathing();
+  }
 
   switch (this.type) {
     case 'PYR':
@@ -169,9 +176,6 @@ PlayerObject.prototype.draw = function () {
 
 
   
-
-  // gl.uniform3f(shaderProgram.colorUniform, this.r, this.g, this.b);
-  
   switch (this.type) {
     case 'PYR':
       this.initPyramidBuffer();
@@ -192,6 +196,37 @@ PlayerObject.prototype.draw = function () {
   
 }
 
+PlayerObject.prototype.AIPathing = function(){
+	if(new Date().getTime() - this.lastPathCorrection > this.newPathTime){//change destination
+		let ranX = Math.random() * 20;
+		if(Math.random() < 0.5) //in half of the cases, they are going to move left, half right
+			ranX *= -1;
+
+		let ranZ = Math.random() * 20;
+		if(Math.random() < 0.5)
+			ranZ *= -1;
+
+		this.desX = this.xPos + ranX;
+		console.log(this.desX + " " + this.xPos)
+		this.desZ = this.zPos + ranZ;
+
+		this.lastPathCorrection = new Date().getTime();
+		this.newPathTime = 3000 + Math.random() * 2000; //range 3sec-5sec
+	}
+
+	if(this.desX != null){ //we have a destination
+		//move
+		let dist = Math.sqrt(Math.pow(this.desX - this.xPos, 2) + Math.pow(this.desZ - this.zPos, 2));
+		let dx = (this.desX - this.xPos) / dist;
+		let dz = (this.desZ - this.zPos) / dist;
+		this.move(dx, dz);
+		
+	}
+	
+
+}
+
+
 PlayerObject.prototype.moveTowardsFather = function(){
   if(new Date().getTime() - this.lastDestinationDesignationTime < this.correctDesignationTime){//don't change direction
     //console.log(this.xPos);
@@ -204,10 +239,6 @@ PlayerObject.prototype.moveTowardsFather = function(){
     this.desX = this.father.xPos + (Math.random() * 0.6 + 0.7) * this.offsetX;
     this.desZ = this.father.zPos + (Math.random() * 0.6 + 0.7) * this.offsetZ;
     this.desY = this.father.yPos + (Math.random() * 0.6 + 0.7) * this.offsetY;
-    //let dist = Math.sqrt(Math.pow(this.movX, 2) + Math.pow(this.movZ, 2) + Math.pow(this.movY, 2));
-    //let movXNorm = this.movX / dist;
-    //let movZNorm = this.movZ / dist;
-    //let movYNorm = this.movY / dist;
   }
 
   //move the object
