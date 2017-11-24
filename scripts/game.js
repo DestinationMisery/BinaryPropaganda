@@ -61,9 +61,9 @@ function animate() {
 
     }
 
-    for (var i in friendlyPlayers) {
+    /*for (var i in friendlyPlayers) {
       friendlyPlayers[i].hover(framesPassed);
-    }
+    }*/
 
     yaw += yawRate * elapsed;
     pitch += pitchRate * elapsed;

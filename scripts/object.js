@@ -42,8 +42,41 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father, he
 
 
 PlayerObject.prototype.move = function (dx, dz) {
+
+ 
   this.xPos += dx * this.speed;
   this.zPos += dz * this.speed;
+
+  let noProblem = true;
+  //check collisions
+  for(var i in pyramids){
+    let pyramid = pyramids[i];
+    if(pyramid == this)
+      continue;
+
+    if(this.checkCollision(pyramid)){
+      noProblem = false;
+      break;
+    }
+  }
+
+  if(noProblem){
+    for(var i in cubes){
+      let cube = cubes[i];
+      if(cube == this)
+        continue;
+
+      if(this.checkCollision(cube)){
+        noProblem = false;
+        break;
+      }
+    }
+  }
+
+  if(!noProblem){//collsion detected, can't move.
+  	this.xPos -= dx * this.speed;
+  	this.zPos -= dz * this.speed;
+  }
 }
 
 PlayerObject.prototype.destroy = function () {
@@ -105,6 +138,11 @@ PlayerObject.prototype.shoot = function(x, y, z) {
 
 PlayerObject.prototype.draw = function () {
 
+  this.hover();
+  if(this.father != null){
+    this.moveTowardsFather();
+  }
+
   switch (this.type) {
     case 'PYR':
       gl.useProgram(shaderProgram);
@@ -151,10 +189,7 @@ PlayerObject.prototype.draw = function () {
 
   mvPopMatrix();
 
-  this.hover();
-  if(this.father != null){
-    this.moveTowardsFather();
-  }
+  
 }
 
 PlayerObject.prototype.moveTowardsFather = function(){
@@ -205,12 +240,10 @@ PlayerObject.prototype.moveTowardsFather = function(){
   }
 	let dist = Math.sqrt(Math.pow(this.xPos - this.desX, 2) + Math.pow(this.yPos - this.desY, 2));
   if(!noProblem){//there is a collision, don't move.
-    
     this.xPos -= (this.desX - this.xPos) * this.speed;
-    this.yPos -= (this.desY - this.yPos) * this.speed;
+    this.zPos -= (this.desZ - this.zPos) * this.speed;
   }
   else if(dist < 0.5){//very close to our destination, so will not move
-  	
     this.xPos -= (this.desX - this.xPos) * this.speed;
     this.yPos -= (this.desY - this.yPos) * this.speed;
   }
@@ -218,11 +251,15 @@ PlayerObject.prototype.moveTowardsFather = function(){
 
 }
 
+let sqrt2 = Math.sqrt(2);
 PlayerObject.prototype.checkCollision = function (obj) {
   let disX = obj.xPos - this.xPos;
   let disZ = obj.zPos - this.zPos;
   let distance = Math.sqrt(Math.pow(disX, 2) + Math.pow(disZ, 2));
-  if(this.scale + obj.scale > distance)
+  let thisScale = this.scale * sqrt2;
+  let objScale = obj.scale * sqrt2;
+
+  if(thisScale + obj.scale > distance)
     return true;
 
   return false;
