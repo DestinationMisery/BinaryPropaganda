@@ -34,11 +34,10 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father, he
   this.lastShot = 0;
 
   if (this.type === 'CUBE') {
-    this.ammo = 10000000000000;
+    this.ammo = 100000000;
   } else {
     this.ammo = 10;
   }
- 
 
   this.hoverRange = 0.3;
   this.yPosHoverDown = this.yPos-this.hoverRange;
@@ -108,7 +107,7 @@ PlayerObject.prototype.destroy = function () {
 }
 
 PlayerObject.prototype.autoShoot = function(cubes) {
-  if (new Date().getTime() - this.lastShot >= this.gunCooldownTime && this.ammo > 0) {
+  if (new Date().getTime() - this.lastShot >= this.gunCooldownTime && Math.floor(this.ammo > 0)) {
     let cubesWithDistances = [];
     cubes.forEach((cube) => {
       const dx = cube.xPos - this.xPos;
@@ -149,6 +148,18 @@ PlayerObject.prototype.shoot = function(x, y, z) {
 }
 
 PlayerObject.prototype.draw = function () {
+
+  if (this.father == null) {
+    if (this.type === 'PYR') {
+      $('#player-ammo').html(Math.floor(this.ammo));
+      $('#player-health').html(this.health);
+    }
+    else {
+      $('#enemy-ammo').html(Math.floor(this.ammo));
+      $('#enemy-health').html(this.health);
+    }
+    
+  }
 
   this.hover();
   if(this.father != null){
@@ -554,6 +565,7 @@ PlayerObject.prototype.fillBulletsIfPossible = function (hotspots) {
     const zLowerBound = hotspot.zPos - hotspot.scale/2;
     const zUpperBound = hotspot.zPos + hotspot.scale/2;
     if (this.xPos >= xLowerBound && this.xPos <= xUpperBound && this.zPos >= zLowerBound && this.zPos <= zUpperBound) {
+      console.log(hotspot.fillRate)
       this.ammo += hotspot.fillRate;
     }
   });

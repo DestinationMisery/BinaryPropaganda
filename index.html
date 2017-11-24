@@ -103,14 +103,19 @@
             <li class="nav-item">
               <a class="nav-link" href="/creators.html">Creators</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">2017 J.S., M.Š., L.T.</a>
-						</li>
 						
 						<li class="nav-item">
-								<a class="nav-link disabled" href="#">Mouse to move canvas (change with "M"): <span id="mouseLockState" style="color: #00ff00">ON</span></a>
-							</li>
-          </ul>
+							<a class="nav-link disabled" href="#">Mouse move ("M"): <span id="mouseLockState" style="color: #00ff00">ON</span></a>
+						</li>
+					</ul>
+					
+					<ul class="navbar-nav navbar-right">
+						<li class="nav-item disabled">AMMO: <span id="player-ammo" style="color: red"></span></li>
+						<li class="nav-item disabled">YOUR HEALTH: <span id="player-health" style="color: green"></span></li>
+
+						<li class="nav-item disabled" style="padding-left: 50px; border-left: 1px solid black;">ENEMY AMMO: <span id="enemy-ammo" style="color: red"></span></li>
+						<li class="nav-item disabled">ENEMY HEALTH: <span id="enemy-health" style="color: green"></span></li>
+					</ul>
         </div>
       </nav>
 
@@ -122,8 +127,11 @@
       </canvas>
         <div id="loadingtext">Loading world...</div
       <br />
-      <br />
-      (Use cursor WASD keys to move and <code>Page Up</code>/<code>Page Down</code> to look up/down)
+			<br />
+			<div class="instructions">
+				(Use cursor WASD keys to move player with allies and use the mouse outside the canvas to move the camera).
+			</div>
+     
       <br />
       <br />
     </div>

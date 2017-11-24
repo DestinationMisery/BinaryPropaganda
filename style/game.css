@@ -3,6 +3,11 @@
 	width: 100%;
 }
 
+.instructions {
+	display: table;
+	margin: 0 auto;
+}
+
 canvas {
 	margin: 0 auto;
 	display: table;

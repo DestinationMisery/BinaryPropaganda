@@ -144,10 +144,10 @@ function start() {
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.4, 1.1, -16.0, 0, 0, 0, fatherCube, 3));
     cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, 2.8, 1.3, -18.5, 0, 0, 0, fatherCube, 3));
 
-    let fps = Math.ceil(1000/15);
-    let hotspotFillRate = Math.ceil(1/fps);
+    let fps = 1000/15;
+    let hotspotFillRate = 1/fps;
     
-    hotspots.push(new Hotspot(-0.2, -10, 2, hotspotFillRate));
+    hotspots.push(new Hotspot(-0.2, -10, 2, 5*hotspotFillRate));
 
     //cubes[cubes.length - 1].executePath(randomPyramidPath, 14);
 
