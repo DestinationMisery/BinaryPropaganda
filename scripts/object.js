@@ -11,8 +11,8 @@ function PlayerObject(type, size, xPos, yPos, zPos, rotX, rotY, rotZ, father, he
   this.rotY = rotY;
   this.rotZ = rotZ;
 
+  this.father = father;
   if(father != null){
-    this.father = father;
     this.offsetX = this.xPos - father.xPos;
     this.offsetZ = this.zPos - father.zPos;
     this.offsetY = this.yPos - father.yPos;
@@ -205,12 +205,12 @@ PlayerObject.prototype.moveTowardsFather = function(){
   }
 	let dist = Math.sqrt(Math.pow(this.xPos - this.desX, 2) + Math.pow(this.yPos - this.desY, 2));
   if(!noProblem){//there is a collision, don't move.
-    console.log("problem");
+    
     this.xPos -= (this.desX - this.xPos) * this.speed;
     this.yPos -= (this.desY - this.yPos) * this.speed;
   }
   else if(dist < 0.5){//very close to our destination, so will not move
-  	console.log("hashtag close");
+  	
     this.xPos -= (this.desX - this.xPos) * this.speed;
     this.yPos -= (this.desY - this.yPos) * this.speed;
   }
