@@ -84,6 +84,17 @@ PlayerObject.prototype.move = function (dx, dz) {
     }
   }
 
+  if(noProblem){ //border collision detection (25 * 25 je size)
+  	if(this.xPos + this.scale > 23.5)
+  		noProblem = false;
+  	else if(this.zPos + this.scale > 23.5)
+  		noProblem = false;
+  	else if(this.xPos - this.scale < -23.5)
+  		noProblem = false;
+  	else if(this.zPos - this.scale < -23.5)
+  		noProblem = false;
+  }
+
   if(!noProblem){//collsion detected, can't move.
   	this.xPos -= dx * this.speed;
   	this.zPos -= dz * this.speed;
@@ -217,6 +228,23 @@ PlayerObject.prototype.AIPathing = function(){
 		this.desX = this.xPos + ranX;
 		this.desZ = this.zPos + ranZ;
 
+		let noProblem = true;
+		if(noProblem){ //border collision detection (25 * 25 je size)
+			if(this.desX + this.scale > 22.0)
+				noProblem = false;
+			else if(this.desZ + this.scale > 22.0)
+				noProblem = false;
+			else if(this.desX - this.scale < -22.0)
+				noProblem = false;
+			else if(this.desZ - this.scale < -22.0)
+				noProblem = false;
+		}
+
+		if(!noProblem){//path would lead us into border, try new random path
+			this.AIPathing();
+			return;
+		}
+
 		this.lastPathCorrection = new Date().getTime();
 		this.newPathTime = 3000 + Math.random() * 2000; //range 3sec-5sec
 	}
@@ -275,6 +303,18 @@ PlayerObject.prototype.moveTowardsFather = function(){
       }
     }
   }
+
+  if(noProblem){ //border collision detection (25 * 25 je size)
+  	if(this.xPos + this.scale > 23.5)
+  		noProblem = false;
+  	else if(this.zPos + this.scale > 23.5)
+  		noProblem = false;
+  	else if(this.xPos - this.scale < -23.5)
+  		noProblem = false;
+  	else if(this.zPos - this.scale < -23.5)
+  		noProblem = false;
+  }
+
 	let dist = Math.sqrt(Math.pow(this.xPos - this.desX, 2) + Math.pow(this.yPos - this.desY, 2));
   if(!noProblem){//there is a collision, don't move.
     this.xPos -= (this.desX - this.xPos) * this.speed;
