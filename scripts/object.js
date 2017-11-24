@@ -207,7 +207,6 @@ PlayerObject.prototype.AIPathing = function(){
 			ranZ *= -1;
 
 		this.desX = this.xPos + ranX;
-		console.log(this.desX + " " + this.xPos)
 		this.desZ = this.zPos + ranZ;
 
 		this.lastPathCorrection = new Date().getTime();
@@ -229,9 +228,8 @@ PlayerObject.prototype.AIPathing = function(){
 
 PlayerObject.prototype.moveTowardsFather = function(){
   if(new Date().getTime() - this.lastDestinationDesignationTime < this.correctDesignationTime){//don't change direction
-    //console.log(this.xPos);
-	if(this.desX == null)
-		return;
+		if(this.desX == null)
+			return;
   }
   else{//change direction
     this.lastDestinationDesignationTime = new Date().getTime();

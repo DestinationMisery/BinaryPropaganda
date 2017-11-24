@@ -4,7 +4,7 @@
 *
 */
 
-var mouseMoveEngaged = false;
+var mouseMoveEngaged = true;
 function toggleMouseMove() {
   mouseMoveEngaged = !mouseMoveEngaged;
   if (mouseMoveEngaged) {
@@ -57,7 +57,7 @@ function getMouseY() {
 }
 
 // Function that changes the camera's position according to the mouse position
-var mouseMoveSpeed = 0.03;
+var mouseMoveSpeed = 0.08;
 function mouseMovePlayground(e) {
   var marginLeft = $("#glcanvas").offset().left;
   var marginTop = 100;

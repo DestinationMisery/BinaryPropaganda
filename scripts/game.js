@@ -130,21 +130,20 @@ function start() {
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
 
-    let fatherPyr = new PlayerObject('PYR', 0.4, 0.6, 1.2, -7.0, 0, 0, 180, null, 5);
+    let fatherPyr = new PlayerObject('PYR', 0.4, 0.7, 1.2, -7.0, 0, 0, 180, null, 5);
     pyramids.push(fatherPyr);
-    pyramids.push(new PlayerObject('PYR', Math.random() * 0.25 + 0.15, -0.2, 1.4, -6.0, 0, 0, 180, fatherPyr, 3));
-    pyramids.push(new PlayerObject('PYR', Math.random() * 0.25 + 0.15, 0.1, 1.0, -9.0, 0, 0, 180, fatherPyr, 3));
-    pyramids.push(new PlayerObject('PYR', Math.random() * 0.25 + 0.15, 1.7, 1.2, -5.7, 0, 0, 180, fatherPyr, 3));
+    pyramids.push(new PlayerObject('PYR', Math.random() * 0.25 + 0.15, -0.5, 1.4, -4.5, 0, 0, 180, fatherPyr, 3));
+    pyramids.push(new PlayerObject('PYR', Math.random() * 0.25 + 0.15, 0.0, 1.0, -9.7, 0, 0, 180, fatherPyr, 3));
+    pyramids.push(new PlayerObject('PYR', Math.random() * 0.25 + 0.15, 2.0, 1.2, -5.3, 0, 0, 180, fatherPyr, 3));
 
 
 
-    let fatherCube = new PlayerObject('CUBE', 0.4, 0.6, 1.2, -19.0, 0, 0, 0, null, 5);
+    let fatherCube = new PlayerObject('CUBE', 0.4, 0.7, 1.2, -19.0, 0, 0, 0, null, 5);
     cubes.push(fatherCube);
-    cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.2, 1.5, -21.0, 0, 0, 0, fatherCube, 3));
-    cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.1, 1.1, -17.0, 0, 0, 0, fatherCube, 3));
-    cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, 2.3, 1.3, -21.0, 0, 0, 0, fatherCube, 3));
+    cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.9, 1.5, -22.0, 0, 0, 0, fatherCube, 3));
+    cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, -0.4, 1.1, -16.0, 0, 0, 0, fatherCube, 3));
+    cubes.push(new PlayerObject('CUBE', Math.random() * 0.25 + 0.15, 2.8, 1.3, -18.5, 0, 0, 0, fatherCube, 3));
 
-    //cubes[cubes.length - 1].executePath(randomPyramidPath, 14);
 
     // Set up to draw the scene periodically.
     setInterval(function() {
