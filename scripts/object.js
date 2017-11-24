@@ -135,7 +135,7 @@ PlayerObject.prototype.autoShoot = function(cubes) {
     });
     if (cubesWithDistances.length > 0) {
       let closestCube = null;
-      let minDist = 1000000;
+      let minDist = 10000;
       cubesWithDistances.forEach((cube) => {
         if (cube.distance < minDist) {
           minDist = cube.distance;
@@ -528,12 +528,12 @@ PlayerObject.prototype.initCubeBuffer = function() {
   
   gl.bindBuffer(gl.ARRAY_BUFFER, this.cubeVertexColorBuffer);
   colors = [
-      [1.0, 0.0, 0.0, 1.0], // Front face
-      [1.0, 1.0, 0.0, 1.0], // Back face
-      [0.0, 1.0, 0.0, 1.0], // Top face
-      [1.0, 0.5, 0.5, 1.0], // Bottom face
-      [1.0, 0.0, 1.0, 1.0], // Right face
-      [0.0, 0.0, 1.0, 1.0]  // Left face
+      [0.85, 0, 0.0, 1.0], // Front face
+      [0.8, 0.05, 0.0, 1.0], // Back face
+      [0.55, 0.0, 0.0, 1.0], // Top face
+      [0.65, 0.0, 0.0, 1.0], // Bottom face
+      [0.6, 0.0, 0.0, 1.0], // Right face
+      [0.55, 0.0, 0.0, 1.0]  // Left face
   ];
   var unpackedColors = [];
   for (var i in colors) {
