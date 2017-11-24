@@ -83,7 +83,7 @@ PlayerObject.prototype.destroy = function () {
   
   if (this.father === null) {
     // je suis papi
-    const winners = this.type === 'PYR' ? 'Pyramids' : 'Cubes';
+    const winners = this.type === 'PYR' ? 'Cubes' : 'Pyramids';
     let playAgain = confirm(`End of game! ${winners} have won! Play again?`);
     if (playAgain) {
       window.location.reload();
